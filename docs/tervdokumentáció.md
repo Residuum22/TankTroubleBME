@@ -80,12 +80,18 @@ Ez az osztály felelős a hálózati kommunikáció összefogásáért.
 
 A `NetworkController` objektum feladata hálózaton elérhető szobák felderítése, az alhálózati maszknak megfelelő IP-cím tartományban található összes (kivéve a network és broadcast) címekre küldött TCP/IP csomagokkal abban az esetben, ha a felhasználó vendégként keres szobákat. Ha a felhasználó házigazda, akkor az objektum feladata a vendégek által küldött csomagokra válaszolni a szoba nevével, a férőhelyek számával, és az eddig becsatlakozott felhasználók neveinek listájával (a szerver mindig ezeket az adatokat teszi a válaszba, a kliens pedig a számára éppen szükséges adatokat használja fel az üzenetből, az aktuális nézetnek megfelelően). Ha a felhasználó házigazda, de a szobában már elindult a játék, akkor ez a szolgáltatás megszűnik, és a gép egyáltalán nem reagál a beérkező szoba-létezésre vonatkozó kérdésekre a játék befejezéséig. Ha egy vendég típusú felhasználó már nem szobát keres, hanem becsatlakozott és az előszobában várakozik, akkor nem küld üzenetet az összes címre, hanem csak célirányosan a választott szobához tartozó szerverrel kommunikál.
 
-Szintén ennek az objektumnak a feladata a `Battlefield`-el együttműködve játék közben a csatatéren történt események szinkronizálása a gépek között. Amennyiben egy tank megmozdul (`moveTankToNextPosition`), vagy egy lövedék keletkezik (`shootMissile`), ez az osztály küldi be ezt az információt a szervernek, ami továbbítja azt az összes csatlakozott játékosnak. Ezeknek az adatoknak az ismeretében már minden kliensen külön-külön számítható a játéktér állapota (`updateXXX` függvények). Ennek megfelelően szintén ennek az objektumnak a feladata fogadni a mozgásokra illetve lövések leadására vonatkozó információkat, és továbbítani azokat a `Battlefield` felé, ami feldolgozza azokat. Ha a felhasználó gépe a szerver, akkor ezen felül még a csatlakozott játékosok listáját is tárolnia kell, és közvetítenie ezeket az üzeneteket minden játékos felé (~broadcast, de csak az adott címekre nézve).
+Szintén ennek az objektumnak a feladata a `Battlefield`-el együttműködve játék közben a csatatéren történt események szinkronizálása a gépek között. Amennyiben egy tank megmozdul (`moveTankToNextPosition`), vagy egy lövedék keletkezik (`shootMissile`), ez az osztály küldi be ezt az információt a szervernek, ami továbbítja azt az összes csatlakozott játékosnak. Ezeknek az adatoknak az ismeretében már minden kliensen külön-külön számítható a játéktér állapota. Ennek megfelelően szintén ennek az objektumnak a feladata fogadni a mozgásokra illetve lövések leadására vonatkozó információkat, és továbbítani azokat a `Battlefield` felé, ami feldolgozza azokat. Ha a felhasználó gépe a szerver, akkor ezen felül még a csatlakozott játékosok listáját is tárolnia kell, és közvetítenie ezeket az üzeneteket minden játékos felé (~broadcast, de csak az adott címekre nézve).
 
 Ide tartozik még a szoba generálásakor a játéktér felépítésére és a tankok pozíciójára és irányára vonatkozó adatok küldése (szerver esetén) vagy fogadása (kliens esetén), és továbbítása a `Battlefield` vezérlő felé.
 
-A `NetworkController` feladata továbbá, hogy kezelje a szobákba való bejelentkezési kérelmeket ezeket továbbítsa a `WaitForGameToStartWindow`-nak és egy felugró ablakban ezt jelezze a szoba tulajdonosának. Amennyiben elfogadta a kérelmet a szoba tulajdonosa, akkor ez az osztály becsatlakoztatja az új játékost.
+A `NetworkController` feladata továbbá, hogy kezelje a szobákba való bejelentkezési kérelmeket (`requestToJoinRoom`) ezeket továbbítsa a `WaitForGameToStartWindow`-nak és egy felugró ablakban ezt jelezze a szoba tulajdonosának. Amennyiben elfogadta a kérelmet a szoba tulajdonosa, akkor ez az osztály becsatlakoztatja az új játékost (`handleJoinRequest`).
 
 ### Room
 
 Ez az osztály írja le a felfedezett szobákat.
+
+### Munkamegosztás
+
+Mihalik Márk: GUI és pályagenerálás
+Girgász Péter Ákos: Hálózatkezelés
+Vezse Botond: Játéklogika implementálása
