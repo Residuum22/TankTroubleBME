@@ -92,6 +92,6 @@ Ez az osztály írja le a felfedezett szobákat.
 
 ### Munkamegosztás
 
-Mihalik Márk: GUI és pályagenerálás
-Girgász Péter Ákos: Hálózatkezelés
-Vezse Botond: Játéklogika implementálása
+- Mihalik Márk: GUI és pályagenerálás
+- Girgász Péter Ákos: Hálózatkezelés
+- Vezse Botond: Játéklogika implementálása
