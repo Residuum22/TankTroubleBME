@@ -1,4 +1,4 @@
-# Tervdokumentáció
+# TankTrouble tervdokumentáció
 
 ![Ősosztályok](osztalydiagram.png)
 
@@ -14,7 +14,7 @@ Az egész program ősosztálya, ennek egy példánya fogja össze a program telj
 
 A program elindítása után ez a nézet fogadja a felhasználót. Első lépésként egy beviteli mezővel rendelkező *Message Box*-ban meg kell adnia a játékosnevét, majd az új szerver indítása, meglévő szerverhez csatlakozás és kilépés opciók közül választhat. Valamelyik opciót kiválasztva a `MainMenuWindow` nézetet rendre a `ListRoomsWindow` vagy a `CreateRoomWindow` nézet váltja fel, illetve kilép a program.
 
-A játékos neve angol ábécé kis- és nagybetűket, számokat és aláhúzás jelet tartalmazhat. Ez a szöveg nem lépheti túl a maximális 20 karaktert. A játékosnevek esetleges ütközése nem okoz problémát a játék számára, mivel `valahogy máshogy` vannak azonosítva a felhasználók, a nevet csak a többi játékosnak való megjelenítésre használja a program.
+A játékos neve angol ábécé kis- és nagybetűket, számokat és aláhúzásjelet tartalmazhat. Ez a szöveg nem lépheti túl a maximális 20 karaktert. A játékosnevek esetleges ütközése nem okoz problémát a játék számára, mivel a felhasználók az IP címük alapján vannak azonosítva, a nevet csak a többi játékosnak való megjelenítésre használja a program.
 
 ### ListRoomsWindow
 
@@ -22,11 +22,11 @@ Ebben a nézetben jelennek meg a hálózaton elérhető, másik számítógépek
 
 A listát gombnyomással frissítheti a felhasználó, visszaléphet a kezdőmenübe vagy egy elérhető szobához csatlakozhat. Egy szoba akkor elérhető, ha sikerült megtalálni a hálózaton, és van benne szabad férőhely (slot). Abban az esetben, ha egy szobában pl. 1 szabad hely van, de két számítógépen is felfedezték, és egyszerre próbálnak csatlakozni, akkor a szerver a hamarabb beérkező kapcsolódást fogadja el, a másodikat pedig visszautasítja. Ilyenkor az utóbbi felhasználó gépén alert-ben üzenet jelenik meg, hogy sikertelen volt a szobához való csatlakozás, és frissül neki az elérhető szobák listája. Hasonló hibaüzenet jelenik meg minden más hálózati kapcsolattal összefüggő csatlakozási hiba esetén is.
 
-Egy szobához való csatlakozás után a felhasználó a `WaitForGameToStart` osztályban megvalósított előszobába (lobby) kerül, ahol a játék elindulására fog várakozni, de továbbra is lehetősége van visszalépni a szobalistára.
+Egy szobához való csatlakozás után a felhasználó a `WaitForGameToStart` osztályban megvalósított előszobába (lobby) kerül, ahol a játék elindulására fog várakozni, de továbbra is lehetősége van visszalépni a szobalistára. Ha visszalép a szobalistára, akkor a továbbiakban már nem várakozik a játék indulására.
 
 ### CreateRoomWindow
 
-Ebben a nézetben tud a játékos saját szobát (~szervert) indítani. Be kell állítania az elérhető helyeket (slot-ok, 1-nél nagyobb pozitív egész, ebben a számban benne van maga a játékos is). Legalább 2 férőhelynél kevesebbel nincs értelme szobát indítani, emiatt a program figyelmeztetéssel nem engedi létrehozni a szervert. A szoba neve a játékosról (a program indulásakor megadott) kapja a nevét, pl. "Albert's room".
+Ebben a nézetben tud a játékos saját szobát (~szervert) indítani. Be kell állítania az elérhető helyeket (slot-ok, 1-nél nagyobb pozitív egész, ebben a számban benne van maga a játékos is). Legalább 2 férőhelynél kevesebbel nincs értelme szobát indítani, emiatt a program figyelmeztetéssel nem engedi létrehozni a szervert. A szoba neve a házigazdáról kapja a nevét, pl. "Albert's room".
 
 A szerver elindítása után a felhasználó a `WaitForGameToStart` osztályban megvalósított előszobába (lobby) kerül, a játékot gombnyomással el tudja indítani akkor, ha rajta kívül legalább 1 másik felhasználó becsatlakozott, illetve a játék automatikusan elindul akkor, ha az összes férőhely betelt a szobában.
 
@@ -52,13 +52,13 @@ Ennek az osztálynak a feladata a játék kezdetén a házigazda gépén a csata
 
 A `Battlefield` feladata minden lépés (játékos által gombnyomással kiváltott tankmozgás, vagy időalapon kiváltott lövedékmozgás) ellenőrizni a tankok és lövedékek helyzeteit, és ennek függvényében a tankokat illetve lövedéket megszüntetni, adott esetben a játékot befejezni. A játék akkor ér véget, ha egyetlen tank maradt, vagy egyetlen tank sem maradt a játékmezőn. A játék vége, tehát az utolsó előtti vagy a két utolsó tank *megszűnése* egy lövedékmozgás által kiváltott ciklusban tud bekövetkezni.
 
-Ha két tank felé is halad lövedék, és elvileg egyszerre éri el őket (pl. az a felállás, hogy 4 tank van, és 1-1 tank azonos időpontban ad le lövést a velük szemben álló 1-1 tankra), akkor a tankok kiesése a kiértékelések sorrendjében történik meg, de abban az esetben, ha a játékban lévő utolsó két tank egy lövedékpozíció-frissítési ciklusban esik ki, akkor a játék döntetlenként fejeződik be. Ennek megfelelően a játék vége akkor dönthető el, ha már az összes lövedék mozgása ki lett értékelve.
+Ha két tank felé is halad lövedék, és elvileg egyszerre éri el őket (pl. az a felállás, hogy 4 tank van, és 1-1 tank azonos időpontban ad le lövést a velük szemben álló 1-1 tankra), akkor a tankok kiesése a kiértékelések sorrendjében történik meg, de abban az esetben, ha a játékban lévő utolsó két tank egy lövedékpozíció-frissítési ciklusban esik ki, akkor a játék döntetlenként fejeződik be. Ennek megfelelően a játék vége csak akkor dönthető el, ha már az összes lövedék mozgása ki lett értékelve.
 
 A játék végén a felhasználók alert-ben látják a nyertes felhasználó nevét (vagy felhasználók neveit döntetlen esetén), majd azt bezárva a főmenübe kerülnek, de ilyenkor már nem kell új játékosnevet megadniuk.
 
 ### Field
 
-A csatamezőt a `Field` objektumok alkotják. Ezek vagy falak lehetnek, vagy utak (`WALL`, `ROAD`). A falakon nem tudnak átmenni a tankok, és a lövedékek is megállnak bennük. Az utak mentén tudnak a tankok közlekedni, és a lövedékek is ezek mentén tudnak haladni.
+A csatamezőt a `Field` objektumok alkotják. Ezek vagy falak lehetnek, vagy utak (`WALL`, `ROAD`). A falakon nem tudnak átmenni a tankok, és a lövedékek is megállnak/megszűnnek bennük. Az utak mentén tudnak a tankok közlekedni, és a lövedékek is ezek mentén tudnak haladni.
 
 A mezőt a játéktér bal felső sarkához (origó) viszonyított `x` és `y` koordinátája azonosítja, az `x` tengely értékei függőlegesen jobbra, az `y` tengely értékei lefele növekednek.
 
@@ -70,7 +70,7 @@ Az egyik leszármazottja a tank, ami a pálya `ROAD` mezői mentén mozog. A csa
 
 A tankok a `space` billentyű lenyomására lövedéket lőnek ki abba az irányba, amerre a legutóbb haladtak, illetve ha még nem mozdultak meg, akkor a pálya létrejöttekor kapott irányukba. Ilyenkor egy `Missile` típusú objektum keletkezik, ami szintén a `MovingObject` leszármazottja. A lövedékek pozíciója periodikusan frissül, a `Battlefield` adott időközönként hívva minden `Missile` `updateMissilePosition` függvényét. Ennek következtében a lövedékek fix, egyenletes sebességgel mozognak (~valahány mező/másodperc). Egy játékmezőn több lövedék is lehet egyidőben, nem ütköznek össze, és nem is befolyásolják egymás mozgását.
 
-A `Battlefield` a hozzá kapcsolódó részben bemutatott esetekben ellenőrzi a játékmezők és a rajtuk lévő mozgó objektumok közötti összefüggéseket: egy lövedék megszűnik akkor, ha fal típusú mezőre ért a mozgása után, vagy tankot tartalmazó mezőre ért a mozgása után, ilyenkor az adott tank is megszűnik.
+A `Battlefield` a hozzá kapcsolódó részben bemutatott esetekben és módon ellenőrzi a játékmezők és a rajtuk lévő mozgó objektumok közötti összefüggéseket: egy lövedék megszűnik akkor, ha fal típusú mezőre ért a mozgása után, vagy tankot tartalmazó mezőre ért a mozgása után, ilyenkor az adott tank is megszűnik.
 
 ## Hálózati kapcsolat implementációja
 
@@ -84,13 +84,13 @@ Szintén ennek az objektumnak a feladata a `Battlefield`-el együttműködve já
 
 Ide tartozik még a szoba generálásakor a játéktér felépítésére és a tankok pozíciójára és irányára vonatkozó adatok küldése (szerver esetén) vagy fogadása (kliens esetén), és továbbítása a `Battlefield` vezérlő felé.
 
-A `NetworkController` feladata továbbá, hogy kezelje a szobákba való bejelentkezési kérelmeket (`requestToJoinRoom`) ezeket továbbítsa a `WaitForGameToStartWindow`-nak és egy felugró ablakban ezt jelezze a szoba tulajdonosának. Amennyiben elfogadta a kérelmet a szoba tulajdonosa, akkor ez az osztály becsatlakoztatja az új játékost (`handleJoinRequest`).
+A `NetworkController` feladata továbbá, hogy kezelje a szobákba való bejelentkezési kérelmeket (`requestToJoinRoom` a klienseken, `handleJoinRequest` a szerveren), és ezeket továbbítsa a `WaitForGameToStartWindow`-nak.
 
 ### Room
 
-Ez az osztály írja le a felfedezett szobákat.
+Ez az osztály írja le a felfedezett szobákat kliens esetén, vagy szerver esetén a létrehozott szobát.
 
-### Munkamegosztás
+## Munkamegosztás
 
 - Mihalik Márk: GUI és pályagenerálás
 - Girgász Péter Ákos: Hálózatkezelés
