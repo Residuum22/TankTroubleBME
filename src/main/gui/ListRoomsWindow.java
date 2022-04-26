@@ -1,14 +1,11 @@
-package com.bpm.TankTroubleBME.view;
+package main.gui;
 
-import com.bpm.TankTroubleBME.model.Player;
-import com.bpm.TankTroubleBME.model.Room;
+import main.model.Player;
+import main.model.Room;
 
 import javax.swing.*;
 import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import org.junit.Test;
 
 public class ListRoomsWindow {
     //todo clear this line if network controller is done

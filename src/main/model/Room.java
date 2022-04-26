@@ -1,6 +1,4 @@
-package com.bpm.TankTroubleBME.model;
-
-import com.bpm.TankTroubleBME.model.Player;
+package main.model;
 
 import java.net.Inet4Address;
 import java.util.List;

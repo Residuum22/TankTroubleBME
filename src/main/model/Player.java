@@ -1,4 +1,4 @@
-package com.bpm.TankTroubleBME.model;
+package main.model;
 
 import java.net.Inet4Address;
 

@@ -1,8 +1,8 @@
-package com.bpm.TankTroubleBME;
+package main;
 
-import com.bpm.TankTroubleBME.model.Player;
-import com.bpm.TankTroubleBME.model.Room;
-import com.bpm.TankTroubleBME.view.MainMenuWindow;
+import main.model.Player;
+import main.model.Room;
+import main.gui.MainMenuWindow;
 
 import java.util.List;
 
