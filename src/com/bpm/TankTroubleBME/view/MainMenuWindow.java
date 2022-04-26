@@ -88,7 +88,7 @@ public class MainMenuWindow {
     }
 
     public void openListRoomsWindow() {
-        //TODO
+        new ListRoomsWindow();
     }
 
     public void setNewPlayerName() {
