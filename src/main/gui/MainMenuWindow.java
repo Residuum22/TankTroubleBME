@@ -52,8 +52,12 @@ public class MainMenuWindow {
         mainMenuWindowFrame.setVisible(true);
     }
 
+    public void setMainMenuWindowFrameVisible() {
+        mainMenuWindowFrame.setVisible(true);
+    }
+
     /**
-     * This function loads images into the the MainMenuWindow
+     * This function loads images into the MainMenuWindow.
      */
     private void loadMainMenuWindowImages() {
         int imageWidth = 128;
@@ -80,7 +84,7 @@ public class MainMenuWindow {
         } catch (IOException ioe) {
             JOptionPane.showMessageDialog(null, "Error occurred during loading main menu images.",
                     "ERROR", JOptionPane.ERROR_MESSAGE);
-            //TODO: Change this pane yes option to quit and add error handling.
+            System.exit(1);
         }
     }
 
@@ -88,10 +92,20 @@ public class MainMenuWindow {
         //TODO
     }
 
+    /**
+     * Open list window
+     */
     public void openListRoomsWindow() {
+        mainMenuWindowFrame.setVisible(false);
         new ListRoomsWindow();
     }
 
+    /**
+     * This function set the player name. First this function check the length of the new username which length must be
+     * between 1 and 20. This username must contain only lower case and upper case characters with number and underline.
+     * If this is done the full game feature is available. If the user cancel this process and there is no username set,
+     * then only two option available: quit and change username.
+     */
     public void setNewPlayerName() {
         // Regex for name validation
         String validationRegex = "^[A-Za-z0-9_]{1,20}";
@@ -118,6 +132,9 @@ public class MainMenuWindow {
         } while (true);
     }
 
+    /**
+     *  Quit from the application in a very elegant way.
+     */
     public void quit() {
         System.exit(0);
     }

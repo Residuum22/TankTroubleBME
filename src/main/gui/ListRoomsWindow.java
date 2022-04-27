@@ -1,11 +1,16 @@
 package main.gui;
 
+import main.TankTrouble;
 import main.model.Player;
 import main.model.Room;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ListRoomsWindow {
     private final JFrame listRoomsWindowFrame;
@@ -75,7 +80,6 @@ public class ListRoomsWindow {
                 // Search for selected room (there will be not too much client on the network so for cycle is enough)
                 if (currentRadioButton.isSelected()) {
                     for (Room currentRoom : TankTrouble.mainGame.getListOfRemoteRooms()) {
-                        System.out.println(currentRadioButton.getActionCommand());
                         if (currentRoom.name.equals(currentRadioButton.getActionCommand())){
                             joinChosenRoom(currentRoom);
                             break;
@@ -97,6 +101,7 @@ public class ListRoomsWindow {
             JRadioButton roomElement = new JRadioButton(room.name);
             roomElement.addActionListener(jRadioButtonActionListener);
             roomElement.setBackground(Color.white);
+            jRadioButtonsArrayList.add(roomElement);
             listOfRoomPanel.add(roomElement);
         }
     }
