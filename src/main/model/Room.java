@@ -18,6 +18,7 @@ public class Room {
 
     public Room(Player owner) {
         this.owner = owner;
+        this.name = owner.name + "'s room";
     }
 
     public Room(RoomType type, String name, Player owner, List<Player> joinedPlayers, int slots, Inet4Address ip) {

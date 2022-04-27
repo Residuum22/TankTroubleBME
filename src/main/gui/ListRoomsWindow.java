@@ -14,25 +14,22 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class ListRoomsWindow {
-    //todo clear this line if network controller is done
-    private ArrayList<Room> roomArrayList = new ArrayList();
-
-    private JFrame listRoomsWindowFrame;
+    private final JFrame listRoomsWindowFrame;
     private JPanel contentPanel;
     private JButton joinToLobbyButton;
     private JButton backButton;
     private JPanel listOfRoomPanel;
     private JButton searchForRoomsButton;
 
-    private ArrayList<JRadioButton> jRadioButtonsArrayList = new ArrayList<>();
+    private final ArrayList<JRadioButton> jRadioButtonsArrayList = new ArrayList<>();
 
     public ListRoomsWindow() {
         listRoomsWindowFrame = new JFrame("Tank Trouble Game");
         listRoomsWindowFrame.setSize(1024, 720);
         listRoomsWindowFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        //todo clear this line if network controller is done
-        updateRoomList(generateRoomList());
+        //todo remove before merge
+        generateRoomList();
 
         addActionListeners();
 
@@ -52,7 +49,14 @@ public class ListRoomsWindow {
         }
     };
 
-
+    /**
+     * This function adds the action listeners to the buttons and the window closing event.
+     * Buttons:
+     *  backButton: Go back to main menu.
+     *  searchForRoomsButton: Disable join button, and remove JRadioButtons. After that list all new remote rooms than
+     *                         update JRadioButtons.
+     *  joinToLobbyButton: Call joins to chosen room button
+     */
     private void addActionListeners() {
         listRoomsWindowFrame.addWindowListener(new WindowAdapter() {
             @Override
@@ -71,30 +75,36 @@ public class ListRoomsWindow {
             for (JRadioButton currentButton : jRadioButtonsArrayList) {
                 listOfRoomPanel.remove(currentButton);
             }
-            //Todo should i do now? Send Join request but there is no network controller
-            //Multithredding queue?
             listRoomInThePanel();
             listOfRoomPanel.updateUI();
         });
 
         joinToLobbyButton.addActionListener(e -> {
-            //Todo: same as the last message
-            joinChosenRoom();
+            for (JRadioButton currentRadioButton : jRadioButtonsArrayList) {
+                // Search for selected room (there will be not too much client on the network so for cycle is enough)
+                if (currentRadioButton.isSelected()) {
+                    for (Room currentRoom : TankTrouble.mainGame.getListOfRemoteRooms()) {
+                        System.out.println(currentRadioButton.getActionCommand());
+                        if (currentRoom.name.equals(currentRadioButton.getActionCommand())){
+                            joinChosenRoom(currentRoom);
+                            break;
+                        }
+                    }
+                }
+            }
         });
     }
 
-    public void updateRoomList(ArrayList<Room> newRoomList) {
-        roomArrayList.removeAll(roomArrayList);
-        roomArrayList.addAll(newRoomList);
-        //Todo how to send signal to this task to update gui? So mani question
-    }
-
+    /**
+     * This function lists the remote rooms to the content panel as a JRadioButton
+     */
     private void listRoomInThePanel() {
+        ArrayList<Room> roomArrayList = TankTrouble.mainGame.getListOfRemoteRooms();
         int lengthOfRoomArrayList = roomArrayList.size();
         listOfRoomPanel.setLayout(new GridLayout(lengthOfRoomArrayList, 1));
         jRadioButtonsArrayList.removeAll(jRadioButtonsArrayList);
         for (Room room : roomArrayList) {
-            JRadioButton roomElement = new JRadioButton(room.owner.name);
+            JRadioButton roomElement = new JRadioButton(room.name);
             roomElement.addActionListener(jRadioButtonActionListener);
             roomElement.setBackground(Color.white);
             jRadioButtonsArrayList.add(roomElement);
@@ -102,28 +112,32 @@ public class ListRoomsWindow {
         }
     }
 
-    public void joinChosenRoom() {
-
+    /**
+     * This function will be called when the user click to the join to lobby button. This function calls the join
+     * request in the network controller.
+     * @param chosenRoom This parameter is the chosen room instance.
+     */
+    public void joinChosenRoom(Room chosenRoom) {
+        //Todo fill this after network controller
     }
 
-    public ArrayList<Room> getRoomArrayList() {
-        return this.roomArrayList;
-    }
-
+    /**
+     *  This function dispose this ListRoomsWindow and set MainMenuWindow set to visible.
+     */
     public void backToMainMenuWindow() {
         listRoomsWindowFrame.dispose();
         TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();
     }
 
     //todo clear this line if network controller is done
-    private ArrayList<Room> generateRoomList() {
+    private void generateRoomList() {
         ArrayList<Room> tmp = new ArrayList<>();
-        Room room1 = new Room(new Player("Mark's room"));
-        Room room2 = new Room(new Player("Peti's room"));
-        Room room3 = new Room(new Player("Boti's room"));
+        Room room1 = new Room(new Player("Mark"));
+        Room room2 = new Room(new Player("Peti"));
+        Room room3 = new Room(new Player("Boti"));
         tmp.add(room1);
         tmp.add(room2);
         tmp.add(room3);
-        return tmp;
+        TankTrouble.mainGame.addNewListOfRemoteRooms(tmp);
     }
 }
