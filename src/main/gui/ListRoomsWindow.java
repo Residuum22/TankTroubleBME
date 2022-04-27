@@ -28,9 +28,6 @@ public class ListRoomsWindow {
         listRoomsWindowFrame.setSize(1024, 720);
         listRoomsWindowFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        //todo remove before merge
-        generateRoomList();
-
         addActionListeners();
 
         listRoomsWindowFrame.add(contentPanel);
@@ -127,17 +124,5 @@ public class ListRoomsWindow {
     public void backToMainMenuWindow() {
         listRoomsWindowFrame.dispose();
         TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();
-    }
-
-    //todo clear this line if network controller is done
-    private void generateRoomList() {
-        ArrayList<Room> tmp = new ArrayList<>();
-        Room room1 = new Room(new Player("Mark"));
-        Room room2 = new Room(new Player("Peti"));
-        Room room3 = new Room(new Player("Boti"));
-        tmp.add(room1);
-        tmp.add(room2);
-        tmp.add(room3);
-        TankTrouble.mainGame.addNewListOfRemoteRooms(tmp);
     }
 }
