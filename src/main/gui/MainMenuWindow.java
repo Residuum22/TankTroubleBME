@@ -89,12 +89,7 @@ public class MainMenuWindow {
     }
 
     public void openListRoomsWindow() {
-        mainMenuWindowFrame.setVisible(false);
         new ListRoomsWindow();
-    }
-
-    public void setMainMenuWindowFrameVisible() {
-        mainMenuWindowFrame.setVisible(true);
     }
 
     public void setNewPlayerName() {
