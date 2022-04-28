@@ -48,7 +48,7 @@ public class CreateRoomWindow {
         System.out.println(maxSlotInt);
         //Todo wait for network controller
         //Todo make waitforgametostartwindowhere
-        backToMainMenuWindow(); // todo temp
+        new WaitForGameStartWindow();
     }
 
 }
