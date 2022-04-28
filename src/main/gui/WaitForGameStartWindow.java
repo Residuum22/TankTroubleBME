@@ -34,6 +34,8 @@ public class WaitForGameStartWindow {
         waitForGameStartWindowFrame.setVisible(true);
     }
 
+    public void setWaitForGameStartWindowFrameVisible() {waitForGameStartWindowFrame.setVisible(true);}
+
     public void leaveRoom() {
         //Todo network controller
         waitForGameStartWindowFrame.dispose();
@@ -41,6 +43,10 @@ public class WaitForGameStartWindow {
     }
 
     public void startGame() {
+        // Here i hide the window only so when the game is over set visible again.
+        waitForGameStartWindowFrame.setVisible(false);
+        GameWindow gameWindow = new GameWindow();
+        gameWindow.drawBattlefield();
         //Todo network controller
     }
 

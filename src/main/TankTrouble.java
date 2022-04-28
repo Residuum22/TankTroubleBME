@@ -1,6 +1,7 @@
 package main;
 
 import main.gui.GameWindow;
+import main.gui.WaitForGameStartWindow;
 import main.model.Battlefield;
 import main.model.Player;
 import main.model.Room;
@@ -12,6 +13,7 @@ import java.util.List;
 public class TankTrouble {
     public static TankTrouble mainGame = new TankTrouble();;
     public static MainMenuWindow mainMenuWindow = new MainMenuWindow();;
+    public static WaitForGameStartWindow waitForGameStartWindow;
 
     private Room ownRoom = null;
     private ArrayList<Room> listOfRemoteRooms = new ArrayList<>();

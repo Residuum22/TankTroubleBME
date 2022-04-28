@@ -1,11 +1,11 @@
 package main.gui;
 
+import main.TankTrouble;
 import main.model.Battlefield;
 import main.model.Field;
 
 import javax.swing.*;
 import java.awt.*;
-
 
 
 public class GameWindow {
@@ -34,6 +34,7 @@ public class GameWindow {
             if (option == JOptionPane.OK_OPTION){
                 //Todo network controller action (put here)
                 gameWindowFrame.dispose();
+                TankTrouble.waitForGameStartWindow.setWaitForGameStartWindowFrameVisible();
             }
         });
         contentPanel.setVisible(false);
