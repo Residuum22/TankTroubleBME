@@ -1,5 +1,7 @@
 package main;
 
+import main.gui.GameWindow;
+import main.model.Battlefield;
 import main.model.Player;
 import main.model.Room;
 import main.gui.MainMenuWindow;
@@ -83,6 +85,8 @@ public class TankTrouble {
      */
     public static void main(String[] args) {
 
+        GameWindow asd = new GameWindow();
+        asd.drawBattlefield();
     }
 
 }
