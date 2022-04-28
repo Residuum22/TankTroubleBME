@@ -89,7 +89,8 @@ public class MainMenuWindow {
     }
 
     public void openCreateRoomWindow() {
-        //TODO
+        mainMenuWindowFrame.setVisible(false);
+        new CreateNewWindow();
     }
 
     /**
