@@ -1,61 +1,54 @@
 package main.model;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 public class Battlefield {
+    /**
+     * Attention! Attention!
+     * TODO we must review this issue in the test phase.
+     * This variable will be specific to the screen
+     *
+     */
     int mazeDimensionX = 60;
     int mazeDimensionY = 30;
-    int[][] matrix = new int[mazeDimensionY][mazeDimensionX];
+    int numberOfBarrier = 50;
 
-    int currentDimY = 0;
-    int currentDimX = 0;
-
-    ArrayList<Field> fields = new ArrayList<>();
+    Field[][] fields = new Field[mazeDimensionY][mazeDimensionX];
     // todo missile
     // todo tanks
 
-    public Battlefield() {
-
-    }
-
+    /**
+     * This function genereate a wall around the arena. So it itarates all around the arena and search for the 0 and max
+     * coordinates. Where this algorithm's condition is true, there the field became wall.
+     * In the second phase this function generate barriers in the arena. The barrier coordinate is randomly generated.
+     */
     public void generateBattleFieldPositioningXZCoordinate() {
-        //Generate wall
+        //Generate wall around the arena.
         for (int i = 0; i < mazeDimensionX; i++) {
-            for (int j = 0; j < mazeDimensionY; j++){
-                if (i == 0 || j == 0 || i == mazeDimensionX - 1 || j == mazeDimensionY - 1)
-                    matrix[j][i] = 1;
-                else
-                    matrix[j][i] = 0;
+            for (int j = 0; j < mazeDimensionY; j++) {
+                fields[j][i] = new Field();
+                if (i == 0 || j == 0 || i == mazeDimensionX - 1 || j == mazeDimensionY - 1) {
+                    fields[j][i].setType(Field.FieldType.Wall);
+                } else {
+                    fields[j][i].setType(Field.FieldType.Road);
+                }
+                fields[j][i].setX(i);
+                fields[j][i].setY(j);
             }
         }
 
+        // Generate random barriers in the arena.
         int intRandomX, intRandomY;
         Random rand = new Random();
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < numberOfBarrier; i++) {
             intRandomX = rand.nextInt(mazeDimensionX);
             intRandomY = rand.nextInt(mazeDimensionY);
-            matrix[intRandomY][intRandomX] = 1;
+            fields[intRandomY][intRandomX].setType(Field.FieldType.Wall);
         }
-        //printMaze();
     }
 
-    private void printMaze() {
-        for (int[] current : matrix) {
-            for (int current2 : current)
-            {
-                if (current2 == 1)
-                    System.out.print('⬛');
-                else
-                    System.out.print('⬜');
-            }
-            System.out.print('\n');
-        }
-
-    }
-
-    public int[][] getMatrix() {
-        return matrix;
+    public Field[][] getFields() {
+        return fields;
     }
 
     public int getMazeDimensionX() {

@@ -1,22 +1,41 @@
 package main.gui;
 
 import main.model.Battlefield;
+import main.model.Field;
 
 import javax.swing.*;
 import java.awt.*;
 
+
+
 public class GameWindow {
+    /**
+     * Important note!
+     * How to use this class?
+     * Make an object e.g: GameWindow game = new GameWindow();
+     * Draw battlefield e.g: game.drawBattlefield();
+     */
     private final int scale = 28;
 
     private JPanel contentPanel;
     private JPanel arenaPanel;
+    private JButton leaveButton;
     Battlefield thisGameBattleField = new Battlefield();
 
     public GameWindow() {
         JFrame gameWindowFrame = new JFrame("Tank Trouble Game");
         gameWindowFrame.setSize(60 * scale, 30 * scale);
-        gameWindowFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        gameWindowFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         gameWindowFrame.add(contentPanel);
+
+        leaveButton.addActionListener(e -> {
+            int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?",
+                    ":(", JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION){
+                //Todo network controller action (put here)
+                gameWindowFrame.dispose();
+            }
+        });
         contentPanel.setVisible(false);
         gameWindowFrame.setVisible(true);
     }
@@ -24,7 +43,7 @@ public class GameWindow {
 
     public void drawBattlefield() {
         thisGameBattleField.generateBattleFieldPositioningXZCoordinate();
-        int[][] matrix = thisGameBattleField.getMatrix();
+        Field[][] fields = thisGameBattleField.getFields();
 
         int mazeDimensionX = thisGameBattleField.getMazeDimensionX();
         int mazeDimensionY = thisGameBattleField.getMazeDimensionY();
@@ -32,9 +51,8 @@ public class GameWindow {
         arenaPanel.setLayout(new GridLayout(mazeDimensionY, mazeDimensionX));
         for (int i = 0; i < mazeDimensionY; i++) {
             for (int j = 0; j < mazeDimensionX; j++) {
-                // Todo store it in a list with index.
                 JPanel temporaryField = new JPanel();
-                if (matrix[i][j] == 1)
+                if (fields[i][j].getType() == Field.FieldType.Wall)
                     temporaryField.setBackground(Color.black);
                 else
                     temporaryField.setBackground(Color.white);

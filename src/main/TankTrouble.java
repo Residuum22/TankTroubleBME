@@ -85,8 +85,6 @@ public class TankTrouble {
      */
     public static void main(String[] args) {
 
-        GameWindow asd = new GameWindow();
-        asd.drawBattlefield();
     }
 
 }

@@ -1,13 +1,13 @@
 package main.model;
 
+/**
+ * This class stores the field element in the battlefield. This class store the concrete coordiante with the field type
+ * which can be wall or road.
+ */
 public class Field {
-    enum FieldType {
+    public enum FieldType {
         Road,
         Wall
-    }
-
-    Field() {
-
     }
 
     private int x, y;
