@@ -4,7 +4,7 @@ import main.TankTrouble;
 
 import javax.swing.*;
 
-public class CreateNewWindow {
+public class CreateRoomWindow {
     private int maxSlotInt;
 
     /**
@@ -13,7 +13,7 @@ public class CreateNewWindow {
      * value than the user will get an error message to correct it's mistake. If the value correct than create a room.
      * and create a new lobby window. If the user hit the cancel button than get back to main manu window.
      */
-    public CreateNewWindow() {
+    public CreateRoomWindow() {
         JTextField roomName = new JTextField();
         JTextField maxSlot = new JFormattedTextField();
         JLabel errorMessage = new JLabel();

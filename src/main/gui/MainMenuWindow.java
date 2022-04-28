@@ -1,7 +1,6 @@
 package main.gui;
 
 import main.TankTrouble;
-import main.gui.ListRoomsWindow;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -90,7 +89,7 @@ public class MainMenuWindow {
 
     public void openCreateRoomWindow() {
         mainMenuWindowFrame.setVisible(false);
-        new CreateNewWindow();
+        new CreateRoomWindow();
     }
 
     /**
