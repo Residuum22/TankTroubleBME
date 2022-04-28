@@ -120,5 +120,6 @@ public class ListRoomsWindow {
      */
     public void backToMainMenuWindow() {
         listRoomsWindowFrame.dispose();
+        TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();
     }
 }
