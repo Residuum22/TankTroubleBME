@@ -84,7 +84,12 @@ public class TankTrouble {
      * @param args Command line arguments. (Should never use)
      */
     public static void main(String[] args) {
-
+        GameWindow asd = new GameWindow();
+        asd.drawBattlefield();
+//        Battlefield asd = new Battlefield();
+//        int[][] int1 = asd.generateBarrier(Battlefield.barrierType.LWall);
+//        int[][] int2 = asd.generateBarrier(Battlefield.barrierType.HLine);
+//        int[][] int3 = asd.generateBarrier(Battlefield.barrierType.VLine);
+//        int[][] int4 = asd.generateBarrier(Battlefield.barrierType.TWall);
     }
-
 }
