@@ -5,6 +5,7 @@ import main.model.Field;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 
 
 
@@ -62,4 +63,51 @@ public class GameWindow {
         arenaPanel.revalidate();
         contentPanel.setVisible(true);
     }
+
+
+    public enum barrierType {
+        LWall,
+        TWall,
+        HLine,
+        VLine
+    }
+
+    public int[][] generateBarries(barrierType barrier) {
+        int dimension = 5;
+
+        int[][] barrierMatrix = new int[dimension][dimension];
+        for (int[] matrix : barrierMatrix) {
+            matrix = new int[dimension];
+        }
+
+        int middle = dimension / 2;
+
+        switch (barrier) {
+            case HLine -> {
+                Arrays.fill(barrierMatrix[middle], 1);
+            }
+            case LWall -> {
+                Arrays.fill(barrierMatrix[0], 1);
+                for (int i = 0; i < barrierMatrix.length; i++) {
+                    barrierMatrix[i][0] = 1;
+                }
+            }
+            case TWall -> {
+                Arrays.fill(barrierMatrix[0], 1);
+                for (int i = 0; i < barrierMatrix.length; i++) {
+                    barrierMatrix[i][middle] = 1;
+                }
+            }
+            case VLine -> {
+                for (int i = 0; i < barrierMatrix.length; i++) {
+                    barrierMatrix[i][middle] = 1;
+                }
+            }
+            default -> {
+                return null;
+            }
+        }
+        return barrierMatrix;
+    }
+
 }
