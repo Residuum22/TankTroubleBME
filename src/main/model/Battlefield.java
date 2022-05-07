@@ -19,6 +19,8 @@ public class Battlefield {
     // todo missile
     // todo tanks
 
+    //todo network controller event handling
+
     public enum barrierType {
         LWall,
         TWall,
@@ -46,15 +48,6 @@ public class Battlefield {
             }
         }
 
-        // Generate random barriers in the arena.
-//        int intRandomX, intRandomY;
-//        Random rand = new Random();
-//        for (int i = 0; i < numberOfBarrier; i++) {
-//            intRandomX = rand.nextInt(mazeDimensionX);
-//            intRandomY = rand.nextInt(mazeDimensionY);
-//            fields[intRandomY][intRandomX].setType(Field.FieldType.Wall);
-//        }
-        // Generate random barriers from the primitives
         int intRandomX, intRandomY, barrierTypeNum;
         Random rand = new Random();
         for (int i = 0; i < numberOfBarrier; i++) {
@@ -68,7 +61,6 @@ public class Battlefield {
                 case 2 -> mergeSubcoordsIntoTheBattleField(intRandomX, intRandomY, generateBarrier(barrierType.HLine));
                 case 3 -> mergeSubcoordsIntoTheBattleField(intRandomX, intRandomY, generateBarrier(barrierType.VLine));
             }
-            //fields[intRandomY][intRandomX].setType(Field.FieldType.Wall);
         }
     }
 
@@ -83,7 +75,6 @@ public class Battlefield {
     public int getMazeDimensionY() {
         return mazeDimensionY;
     }
-
 
     public int[][] generateBarrier(barrierType barrier) {
 

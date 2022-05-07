@@ -45,6 +45,7 @@ public class WaitForGameStartWindow {
     }
 
     public void updateJoinedPlayerList(ArrayList<Player> updatedList) {
+        //todo network controller
         joinedPlayerList.removeAll(joinedPlayerList);
         joinedPlayerList.addAll(updatedList);
 
