@@ -45,7 +45,6 @@ public class CreateRoomWindow {
     }
 
     public void createRoom(String roomName) {
-        System.out.println(maxSlotInt);
         //Todo wait for network controller
         //Todo make waitforgametostartwindowhere
         TankTrouble.waitForGameStartWindow = new WaitForGameStartWindow();
