@@ -19,6 +19,7 @@ public class CreateRoomWindow {
         JLabel errorMessage = new JLabel();
         do {
             roomName.setEnabled(false);
+            roomName.setText(TankTrouble.mainGame.getThisPlayerName() + "'s room");
             Object[] inputs = new Object[]{errorMessage, "Room name", roomName, "Max slots", maxSlot};
             int option = JOptionPane.showConfirmDialog(
                     null, inputs, "Create new lobby", JOptionPane.OK_CANCEL_OPTION);

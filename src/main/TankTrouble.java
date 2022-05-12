@@ -6,6 +6,8 @@ import main.model.Battlefield;
 import main.model.Player;
 import main.model.Room;
 import main.gui.MainMenuWindow;
+import main.networking.DiscoveryService;
+import main.networking.NetworkController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,9 @@ public class TankTrouble {
     private Room ownRoom = null;
     private ArrayList<Room> listOfRemoteRooms = new ArrayList<>();
     private final Player thisPlayer = new Player();
+
+    private NetworkController networkController = new NetworkController();
+    private DiscoveryService discoveryService = new DiscoveryService();
 
     /**
      * LOL this will be our game.
@@ -86,8 +91,8 @@ public class TankTrouble {
      * @param args Command line arguments. (Should never use)
      */
     public static void main(String[] args) {
-        GameWindow asd = new GameWindow();
-        asd.drawBattlefield();
+//        GameWindow asd = new GameWindow();
+//        asd.drawBattlefield();
 //        Battlefield asd = new Battlefield();
 //        int[][] int1 = asd.generateBarrier(Battlefield.barrierType.LWall);
 //        int[][] int2 = asd.generateBarrier(Battlefield.barrierType.HLine);
