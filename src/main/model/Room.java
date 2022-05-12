@@ -5,7 +5,7 @@ import java.net.Inet4Address;
 import java.util.List;
 
 public class Room implements Serializable {
-    enum RoomType {
+    public enum RoomType {
         Host,
         Guest
     }

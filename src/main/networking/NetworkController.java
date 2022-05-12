@@ -5,7 +5,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class NetworkController extends Thread {
-    static final int PORT = 5000;
+    public static final int roomDiscoveryPort = 9981;
+
+    private DiscoveryService discoveryService = new DiscoveryService();
 
     public NetworkController() {
         this.start();
@@ -17,7 +19,7 @@ public class NetworkController extends Thread {
         Socket socket = null;
 
         try {
-            serverSocket = new ServerSocket(PORT);
+            serverSocket = new ServerSocket(5000);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -32,5 +34,13 @@ public class NetworkController extends Thread {
             // new EchoThread(socket).start();
             System.out.println("Got new connection");
         }
+    }
+
+    public void startDiscovery() {
+        this.discoveryService.startDiscovery();
+    }
+
+    public void stopDiscovery() {
+        this.discoveryService.stopDiscovery();
     }
 }

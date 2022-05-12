@@ -13,16 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TankTrouble {
-    public static TankTrouble mainGame = new TankTrouble();;
-    public static MainMenuWindow mainMenuWindow = new MainMenuWindow();;
+    public static TankTrouble mainGame = new TankTrouble();
+    public static MainMenuWindow mainMenuWindow = new MainMenuWindow();
     public static WaitForGameStartWindow waitForGameStartWindow;
 
     private Room ownRoom = null;
     private ArrayList<Room> listOfRemoteRooms = new ArrayList<>();
     private final Player thisPlayer = new Player();
 
-    private NetworkController networkController = new NetworkController();
-    private DiscoveryService discoveryService = new DiscoveryService();
+    public NetworkController networkController = new NetworkController();
 
     /**
      * LOL this will be our game.
@@ -76,6 +75,14 @@ public class TankTrouble {
      */
     public String getThisPlayerName() {
         return this.thisPlayer.name;
+    }
+
+    /**
+     * This function returns the player who is playing with this TankTrouble client.
+     * @return The current player
+     */
+    public Player getThisPlayer() {
+        return this.thisPlayer;
     }
 
     /**

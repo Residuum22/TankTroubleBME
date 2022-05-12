@@ -1,5 +1,6 @@
 package main.networking;
 
+import main.TankTrouble;
 import main.model.Room;
 
 import java.io.IOException;
@@ -11,10 +12,11 @@ import java.util.Enumeration;
 
 public class DiscoveryService extends Thread {
     private final boolean logEnabled = true;
-    private final int pingTimeout = 10;
-    private final int discoveryRoundDelay = 100;
-    private final int roomCheckTimeout = 50;
+    private final int pingTimeout = 50;
+    private final int discoveryRoundDelay = 1000;
+    private final int roomCheckTimeout = 100;
     private ArrayList<Room> foundRooms;
+    private boolean discoveryActive = true;
 
     public DiscoveryService() {
         this.start();
@@ -22,26 +24,42 @@ public class DiscoveryService extends Thread {
 
     @Override
     public void run() {
-        ArrayList<String> networks = new ArrayList<>();
-        ArrayList<String> reachableHosts = new ArrayList<>();
-        ArrayList<Room> foundRoomsTmp = new ArrayList<>();
+        while (true) {
+            if(this.discoveryActive) {
+                ArrayList<String> networks;
+                ArrayList<String> reachableHosts = new ArrayList<>();
+                ArrayList<Room> foundRoomsTmp = new ArrayList<>();
 
-        networks = checkAvailableNetworks();
-        for(int i = 0; i < networks.size(); i++) {
-            reachableHosts.addAll(this.checkSubNet(networks.get(i)));
-        }
-        for(int i = 0; i < reachableHosts.size(); i++) {
-            Room room;
-            room = this.checkIfRemoteRoomAvailable(reachableHosts.get(i));
-            if(room != null) {
-                foundRoomsTmp.add(room);
+                if (this.logEnabled) {
+                    System.out.println("Checking available network interfaces...");
+                }
+                networks = checkAvailableNetworks();
+
+                if (this.logEnabled) {
+                    System.out.println("Checking available hosts on interfaces...");
+                }
+                for (String network : networks) {
+                    reachableHosts.addAll(this.checkSubNet(network));
+                }
+
+                if (this.logEnabled) {
+                    System.out.println("Checking if rooms are available on hosts...");
+                }
+                for (String reachableHost : reachableHosts) {
+                    Room room;
+                    room = this.checkIfRemoteRoomAvailable(reachableHost);
+                    if (room != null) {
+                        foundRoomsTmp.add(room);
+                    }
+                }
+                this.foundRooms = foundRoomsTmp;
+                if (this.logEnabled) {
+                    System.out.println("Discovery cycle done.");
+                }
             }
-        }
-        this.foundRooms = foundRoomsTmp;
 
-        synchronized (this) {
             try {
-                this.wait(this.discoveryRoundDelay);
+                Thread.sleep(this.discoveryRoundDelay);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -54,7 +72,7 @@ public class DiscoveryService extends Thread {
         try {
             final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 
-            for(;interfaces.hasMoreElements();) {
+            while (interfaces.hasMoreElements()) {
                 final NetworkInterface cur = interfaces.nextElement();
 
                 if(cur.isLoopback()) {
@@ -63,19 +81,19 @@ public class DiscoveryService extends Thread {
 
                 if(this.logEnabled) {System.out.println("interface " + cur.getName());}
 
-                for(final InterfaceAddress addr : cur.getInterfaceAddresses()) {
-                    final InetAddress inet_addr = addr.getAddress();
+                for(final InterfaceAddress address : cur.getInterfaceAddresses()) {
+                    final InetAddress inet_addr = address.getAddress();
 
                     if(!(inet_addr instanceof Inet4Address)) {
                         continue;
                     }
-                    if(addr.getNetworkPrefixLength() != 24) {
+                    if(address.getNetworkPrefixLength() != 24) {
                         continue;
                     }
 
                     if(logEnabled) {
                         System.out.println("  address: " + inet_addr.getHostAddress() +
-                                "/" + addr.getNetworkPrefixLength());
+                                "/" + address.getNetworkPrefixLength());
                     }
 
                     networks.add(inet_addr.getHostAddress());
@@ -96,10 +114,14 @@ public class DiscoveryService extends Thread {
             String host = subnet + "." + i;
             System.out.println("Testing " + host);
             try {
-                if (InetAddress.getByName(host).isReachable(pingTimeout)){
-                    if(this.logEnabled) {System.out.println(host + " is reachable");}
+                if (InetAddress.getByName(host).isReachable(pingTimeout)) {
+                    if (this.logEnabled) {
+                        System.out.println(host + " is reachable");
+                    }
                     reachable.add(host);
                 }
+            } catch (ConnectException e) {
+                System.out.println("Connection refused on " + host);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -111,15 +133,28 @@ public class DiscoveryService extends Thread {
     private Room checkIfRemoteRoomAvailable(String host) {
         Room room = null;
 
-        try (Socket socket = new Socket(host, 9981)) {
+        try (Socket socket = new Socket(host, NetworkController.roomDiscoveryPort)) {
             socket.setSoTimeout(this.roomCheckTimeout);
             InputStream inputStream = socket.getInputStream();
             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
             room = (Room) objectInputStream.readObject();
+            room.ip = (Inet4Address) Inet4Address.getByName(host);
+        } catch (ConnectException e) {
+            if(this.logEnabled) {
+                System.out.println("Connection refused on " + host);
+            }
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
         }
 
         return room;
+    }
+
+    public void startDiscovery() {
+        this.discoveryActive = true;
+    }
+
+    public void stopDiscovery() {
+        this.discoveryActive = false;
     }
 }

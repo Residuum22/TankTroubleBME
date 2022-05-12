@@ -39,6 +39,7 @@ public class WaitForGameStartWindow {
     public void leaveRoom() {
         //Todo network controller
         waitForGameStartWindowFrame.dispose();
+        TankTrouble.mainGame.networkController.startDiscovery();
         TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();
     }
 

@@ -1,11 +1,11 @@
 package main.gui;
 
 import main.TankTrouble;
+import main.model.Room;
 
 import javax.swing.*;
 
 public class CreateRoomWindow {
-    private int maxSlotInt;
 
     /**
      * This function creates a JOptionPane where the user can give the room name (todo)
@@ -28,8 +28,7 @@ public class CreateRoomWindow {
                 break;
             }
             try {
-                setMaxSlot(Integer.parseInt(maxSlot.getText()));
-                createRoom(roomName.getText());
+                createRoom(roomName.getText(), Integer.parseInt(maxSlot.getText()));
                 break;
             } catch (NumberFormatException nfe) {
                 errorMessage.setText("Max slot field must contains integer number only!");
@@ -41,13 +40,17 @@ public class CreateRoomWindow {
         TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();
     }
 
-    public void setMaxSlot(int slot) {
-        maxSlotInt = slot;
-    }
-
-    public void createRoom(String roomName) {
+    public void createRoom(String roomName, int slots) {
         //Todo wait for network controller
-        //Todo make waitforgametostartwindowhere
+        Room room = new Room(
+                Room.RoomType.Host,
+                roomName,
+                TankTrouble.mainGame.getThisPlayer(),
+                null,
+                slots,
+                null);
+        TankTrouble.mainGame.addNewOwnRoom(room);
+        TankTrouble.mainGame.networkController.stopDiscovery();
         TankTrouble.waitForGameStartWindow = new WaitForGameStartWindow();
     }
 
