@@ -1,9 +1,10 @@
 package main.model;
 
+import java.io.Serializable;
 import java.net.Inet4Address;
 import java.util.List;
 
-public class Room {
+public class Room implements Serializable {
     enum RoomType {
         Host,
         Guest
