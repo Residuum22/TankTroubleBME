@@ -1,7 +1,9 @@
 package main.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.List;
 
 
 public class Battlefield {
@@ -16,8 +18,8 @@ public class Battlefield {
     int barrierDimension = 5;
 
     Field[][] fields = new Field[mazeDimensionY][mazeDimensionX];
-    // todo missile
-    // todo tanks
+    public ArrayList<Missile> listOfMissiles = new ArrayList<>();
+    public ArrayList<Tank> listOfTanks = new ArrayList<>();
 
     //todo network controller event handling
 
@@ -33,7 +35,7 @@ public class Battlefield {
      * coordinates. Where this algorithm's condition is true, there the field became wall.
      * In the second phase this function generate barriers in the arena. The barrier coordinate is randomly generated.
      */
-    public void generateBattleFieldPositioningXZCoordinate() {
+    public void generateBattleFieldPositioningXYCoordinate() {
         //Generate wall around the arena.
         for (int i = 0; i < mazeDimensionX; i++) {
             for (int j = 0; j < mazeDimensionY; j++) {

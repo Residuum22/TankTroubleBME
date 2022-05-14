@@ -3,6 +3,8 @@ package main.gui;
 import main.TankTrouble;
 import main.model.Battlefield;
 import main.model.Field;
+import main.model.Tank;
+import main.model.Missile;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +23,7 @@ public class GameWindow {
     private JPanel contentPanel;
     private JPanel arenaPanel;
     private JButton leaveButton;
-    Battlefield thisGameBattleField = new Battlefield();
+    static Battlefield thisGameBattleField = new Battlefield();
 
     public GameWindow() {
         JFrame gameWindowFrame = new JFrame("Tank Trouble Game");
@@ -32,7 +34,7 @@ public class GameWindow {
         leaveButton.addActionListener(e -> {
             int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?",
                     ":(", JOptionPane.OK_CANCEL_OPTION);
-            if (option == JOptionPane.OK_OPTION){
+            if (option == JOptionPane.OK_OPTION) {
                 //Todo network controller action (put here)
                 gameWindowFrame.dispose();
                 TankTrouble.waitForGameStartWindow.setWaitForGameStartWindowFrameVisible();
@@ -44,12 +46,13 @@ public class GameWindow {
 
 
     public void drawBattlefield() {
-        thisGameBattleField.generateBattleFieldPositioningXZCoordinate();
+        thisGameBattleField.generateBattleFieldPositioningXYCoordinate();
         Field[][] fields = thisGameBattleField.getFields();
 
         int mazeDimensionX = thisGameBattleField.getMazeDimensionX();
         int mazeDimensionY = thisGameBattleField.getMazeDimensionY();
 
+        arenaPanel.removeAll();
         arenaPanel.setLayout(new GridLayout(mazeDimensionY, mazeDimensionX));
         for (int i = 0; i < mazeDimensionY; i++) {
             for (int j = 0; j < mazeDimensionX; j++) {
@@ -63,5 +66,13 @@ public class GameWindow {
         }
         arenaPanel.revalidate();
         contentPanel.setVisible(true);
+    }
+
+    public static Battlefield getBattlefield() {
+        return thisGameBattleField;
+    }
+
+    public static void setBattlefieldMissile( Missile newMissile ) {
+        thisGameBattleField.listOfMissiles.add(newMissile);
     }
 }
