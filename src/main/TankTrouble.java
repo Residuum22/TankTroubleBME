@@ -1,22 +1,19 @@
 package main;
 
 import main.gui.GameWindow;
-import main.gui.WaitForGameStartWindow;
-import main.model.Battlefield;
-import main.model.Player;
-import main.model.Room;
 import main.gui.MainMenuWindow;
+import main.gui.WaitForGameStartWindow;
+import main.model.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TankTrouble {
-    public static TankTrouble mainGame = new TankTrouble();;
-    public static MainMenuWindow mainMenuWindow = new MainMenuWindow();;
+    public static TankTrouble mainGame = new TankTrouble();
+    public static MainMenuWindow mainMenuWindow = new MainMenuWindow();
     public static WaitForGameStartWindow waitForGameStartWindow;
 
     private Room ownRoom = null;
-    private ArrayList<Room> listOfRemoteRooms = new ArrayList<>();
+    private final ArrayList<Room> listOfRemoteRooms = new ArrayList<>();
     private final Player thisPlayer = new Player();
 
     /**
@@ -74,6 +71,14 @@ public class TankTrouble {
     }
 
     /**
+     * This function returns the player who is playing with this TankTrouble client.
+     * @return The current player
+     */
+    public Player getThisPlayer() {
+        return this.thisPlayer;
+    }
+
+    /**
      * This function modify the
      * @param name The new username of this player after the modification
      */
@@ -93,5 +98,21 @@ public class TankTrouble {
 //        int[][] int2 = asd.generateBarrier(Battlefield.barrierType.HLine);
 //        int[][] int3 = asd.generateBarrier(Battlefield.barrierType.VLine);
 //        int[][] int4 = asd.generateBarrier(Battlefield.barrierType.TWall);
+//
+//       Battlefield myBattlefield = GameWindow.getBattlefield();
+//       Field[][] myFields = myBattlefield.getFields();
+//      myBattlefield.listOfTanks.add(new Tank());
+//       Tank myTank = myBattlefield.getListOfTanks().get(0);
+//       myTank.owner = TankTrouble.mainGame.getThisPlayer();
+//       myTank.direction = MovingObject.Direction.Up;
+//       myTank.shootMissile();
+//       Missile myMissile = myBattlefield.getListOfMissiles().get(0);
+//       myBattlefield.listOfTanks.add(new Tank());
+//       Tank enemyTank = myBattlefield.getListOfTanks().get(1);
+//       enemyTank.position = myFields[myMissile.position.getX()][myMissile.position.getY() - 2];
+//       myMissile.updateMissilePosition();
+//       myMissile.updateMissilePosition();
+//       int missileSize = myBattlefield.getListOfMissiles().size();
+//       int tankSize = myBattlefield.getListOfTanks().size();
     }
 }

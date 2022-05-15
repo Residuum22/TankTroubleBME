@@ -3,7 +3,6 @@ package main.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
-import java.util.List;
 
 
 public class Battlefield {
@@ -14,10 +13,10 @@ public class Battlefield {
      */
     int mazeDimensionX = 60;
     int mazeDimensionY = 30;
-    int numberOfBarrier = 25;
+    int numberOfBarrier = 30;
     int barrierDimension = 5;
 
-    Field[][] fields = new Field[mazeDimensionY][mazeDimensionX];
+    Field[][] fields = new Field[mazeDimensionX][mazeDimensionY];
     public ArrayList<Missile> listOfMissiles = new ArrayList<>();
     public ArrayList<Tank> listOfTanks = new ArrayList<>();
 
@@ -39,14 +38,14 @@ public class Battlefield {
         //Generate wall around the arena.
         for (int i = 0; i < mazeDimensionX; i++) {
             for (int j = 0; j < mazeDimensionY; j++) {
-                fields[j][i] = new Field();
+                fields[i][j] = new Field();
                 if (i == 0 || j == 0 || i == mazeDimensionX - 1 || j == mazeDimensionY - 1) {
-                    fields[j][i].setType(Field.FieldType.Wall);
+                    fields[i][j].setType(Field.FieldType.Wall);
                 } else {
-                    fields[j][i].setType(Field.FieldType.Road);
+                    fields[i][j].setType(Field.FieldType.Road);
                 }
-                fields[j][i].setX(i);
-                fields[j][i].setY(j);
+                fields[i][j].setX(i);
+                fields[i][j].setY(j);
             }
         }
 
@@ -76,6 +75,14 @@ public class Battlefield {
 
     public int getMazeDimensionY() {
         return mazeDimensionY;
+    }
+
+    public ArrayList<Tank> getListOfTanks() {
+        return listOfTanks;
+    }
+
+    public ArrayList<Missile> getListOfMissiles() {
+        return listOfMissiles;
     }
 
     public int[][] generateBarrier(barrierType barrier) {
@@ -113,8 +120,8 @@ public class Battlefield {
     public void mergeSubcoordsIntoTheBattleField(int starX, int starY, int[][] subCoord) {
         for (int i = starX, subi = 0; (i < this.mazeDimensionX) && (subi < barrierDimension); i++, subi++) {
             for (int j = starY, subj = 0; j < this.mazeDimensionY && subj < barrierDimension; j++, subj++) {
-                if (subCoord[subj][subi] == 1) {
-                    fields[j][i].setType(Field.FieldType.Wall);
+                if (subCoord[subi][subj] == 1) {
+                    fields[i][j].setType(Field.FieldType.Wall);
                 }
             }
         }

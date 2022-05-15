@@ -1,7 +1,7 @@
 package main.model;
 
 import main.gui.GameWindow;
-import java.awt.*;
+
 import java.awt.event.KeyEvent;
 import java.util.Random;
 
@@ -33,11 +33,6 @@ public class Tank extends MovingObject {
 
         this.destroyed = false;
         this.owner = null;
-    }
-
-    public void handleKeyPressed(KeyEvent e) {
-        int keyCode = e.getKeyCode();
-        moveTankToNextPosition(keyCode);
     }
 
     public void shootMissile() {
@@ -121,7 +116,8 @@ public class Tank extends MovingObject {
         }
     }
 
-    public void destroyTank() {
+    public void destroyTank(Missile hitMissile) {
         this.destroyed = true;
+        hitMissile = null;
     }
 }

@@ -3,12 +3,12 @@ package main.gui;
 import main.TankTrouble;
 import main.model.Battlefield;
 import main.model.Field;
-import main.model.Tank;
 import main.model.Missile;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 
 public class GameWindow {
@@ -42,6 +42,28 @@ public class GameWindow {
         });
         contentPanel.setVisible(false);
         gameWindowFrame.setVisible(true);
+        gameWindowFrame.addKeyListener(new KeyListener() {
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            public void keyPressed(KeyEvent e) {
+                int keyCode = e.getKeyCode();
+                for (int i = 0; i < thisGameBattleField.listOfTanks.size(); i++) {
+                    if (thisGameBattleField.listOfTanks.get(i).owner.name.equals(TankTrouble.mainGame.getThisPlayerName())) {
+                        switch (keyCode) {
+                            case KeyEvent.VK_RIGHT, KeyEvent.VK_LEFT, KeyEvent.VK_UP, KeyEvent.VK_DOWN ->
+                                    thisGameBattleField.listOfTanks.get(i).moveTankToNextPosition(keyCode);
+                            case KeyEvent.VK_SPACE -> thisGameBattleField.listOfTanks.get(i).shootMissile();
+                        }
+                    }
+                }
+            }
+
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
     }
 
 
@@ -57,7 +79,7 @@ public class GameWindow {
         for (int i = 0; i < mazeDimensionY; i++) {
             for (int j = 0; j < mazeDimensionX; j++) {
                 JPanel temporaryField = new JPanel();
-                if (fields[i][j].getType() == Field.FieldType.Wall)
+                if (fields[j][i].getType() == Field.FieldType.Wall)
                     temporaryField.setBackground(Color.black);
                 else
                     temporaryField.setBackground(Color.white);
