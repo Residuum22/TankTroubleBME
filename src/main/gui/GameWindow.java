@@ -1,10 +1,7 @@
 package main.gui;
 
 import main.TankTrouble;
-import main.model.Battlefield;
-import main.model.Field;
-import main.model.Missile;
-import main.model.Tank;
+import main.model.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -31,7 +28,7 @@ public class GameWindow {
     private JButton leaveButton;
     static Battlefield thisGameBattleField = new Battlefield();
 
-    private ArrayList<JPanel> jPanelArrayList = new ArrayList<>();
+    private JPanel[][] jPanels = new JPanel[thisGameBattleField.getMazeDimensionX()][thisGameBattleField.getMazeDimensionY()];
 
     public GameWindow() {
         JFrame gameWindowFrame = new JFrame("Tank Trouble Game");
@@ -75,8 +72,6 @@ public class GameWindow {
 
 
     public void drawBattlefield() {
-        jPanelArrayList.removeAll(jPanelArrayList);
-
         thisGameBattleField.generateBattleFieldPositioningXYCoordinate();
         Field[][] fields = thisGameBattleField.getFields();
 
@@ -99,43 +94,10 @@ public class GameWindow {
                     temporaryField.setBackground(Color.black);
                 else
                     temporaryField.setBackground(Color.white);
-                jPanelArrayList.add(temporaryField);
+                jPanels[j][i] = temporaryField;
+                arenaPanel.add(jPanels[j][i]);
             }
         }
-
-        //todo postprocess
-        for (Tank currentTank :
-                currentTankList) {
-
-            Field currentTankField = currentTank.getTankPosition();
-            JPanel tmpJPanel = new JPanel();
-            tmpJPanel.setMaximumSize(new Dimension(16, 16));
-            tmpJPanel.setMinimumSize(new Dimension(16, 16));
-            tmpJPanel.setPreferredSize(new Dimension(16, 16));
-            try {
-                final String logoPath = "src\\main\\gui\\resources\\";
-                BufferedImage mainMenuLogo;
-                mainMenuLogo = ImageIO.read(new File(logoPath + "very_very_low_effort_tank.png"));
-                JLabel mainMenuLogoLabel = new JLabel(new ImageIcon(mainMenuLogo.getScaledInstance(16,16, Image.SCALE_DEFAULT)));
-                tmpJPanel.add(mainMenuLogoLabel);
-            } catch (IOException ioe) {
-                //todo
-            }
-            jPanelArrayList.set((currentTankField.getX() - 1) * (currentTankField.getY() - 1), tmpJPanel);
-
-            //todo put
-        }
-
-        for (Missile currentMissile :
-                currentMissileList) {
-
-        }
-
-        for (JPanel thisField:
-             jPanelArrayList) {
-            arenaPanel.add(thisField);
-        }
-
         arenaPanel.revalidate();
         contentPanel.setVisible(true);
     }
@@ -144,7 +106,107 @@ public class GameWindow {
         return thisGameBattleField;
     }
 
+    public void updateScreen() {
+        arenaPanel.revalidate();
+    }
+
+    public void updateTank() {
+        for (Tank currentTank :
+                TankTrouble.myBattlefield.listOfTanks) {
+
+            Field currentTankField = currentTank.getTankPosition();
+            JPanel tmpJPanel = jPanels[currentTankField.getX()][currentTankField.getY()];
+
+            if (currentTank.owner == TankTrouble.mainGame.getThisPlayer())
+                tmpJPanel.setBackground(Color.red);
+            else
+                tmpJPanel.setBackground(Color.blue);
+
+            tmpJPanel.setMaximumSize(new Dimension(16, 16));
+            tmpJPanel.setMinimumSize(new Dimension(16, 16));
+            tmpJPanel.setPreferredSize(new Dimension(16, 16));
+
+            JLabel mainMenuLogoLabel = currentTank.getThisTankJLabel();
+            try {
+                mainMenuLogoLabel.getParent().setBackground(Color.white);
+            } catch (NullPointerException e) {
+                // First run there will be this
+            }
+            arenaPanel.remove(mainMenuLogoLabel);
+
+            try {
+                final String logoPath = "src\\main\\gui\\resources\\";
+                BufferedImage mainMenuLogo;
+                mainMenuLogo = ImageIO.read(new File(logoPath + "very_very_low_effort_tank.png"));
+                mainMenuLogo = rotateTankImage(mainMenuLogo, currentTank);
+                mainMenuLogoLabel.setIcon(new ImageIcon(mainMenuLogo.getScaledInstance(24, 24, Image.SCALE_DEFAULT)));
+                tmpJPanel.add(mainMenuLogoLabel);
+            } catch (IOException ioe) {
+                // Should never happen during regular use
+            }
+        }
+        arenaPanel.revalidate();
+        arenaPanel.repaint();
+    }
+
+    public void updateMissile() {
+        for (Missile currentMissile :
+                TankTrouble.myBattlefield.listOfMissiles) {
+
+            Field currentMissileField = currentMissile.getMissilePosition();
+            JPanel tmpJPanel = jPanels[currentMissileField.getX()][currentMissileField.getY()];
+
+            tmpJPanel.setMaximumSize(new Dimension(16, 16));
+            tmpJPanel.setMinimumSize(new Dimension(16, 16));
+            tmpJPanel.setPreferredSize(new Dimension(16, 16));
+
+            JLabel mainMenuLogoLabel = currentMissile.getThisMissileJLabel();
+            try {
+                mainMenuLogoLabel.getParent().setBackground(Color.white);
+            } catch (NullPointerException e) {
+                // First run there will be this
+            }
+            arenaPanel.remove(mainMenuLogoLabel);
+
+            try {
+                final String logoPath = "src\\main\\gui\\resources\\";
+                BufferedImage mainMenuLogo;
+                mainMenuLogo = ImageIO.read(new File(logoPath + "very_very_low_effort_tank.png"));
+                mainMenuLogoLabel.setIcon(new ImageIcon(mainMenuLogo.getScaledInstance(16, 16, Image.SCALE_DEFAULT)));
+                tmpJPanel.add(mainMenuLogoLabel);
+            } catch (IOException ioe) {
+                // Should never happen during regular use
+            }
+        }
+        arenaPanel.revalidate();
+        arenaPanel.repaint();
+    }
+
     public static void setBattlefieldMissile(Missile newMissile) {
         thisGameBattleField.listOfMissiles.add(newMissile);
+    }
+
+    private static BufferedImage rotateTankImage(BufferedImage bimg, Tank currentTank) {
+        int angle = 0;
+        switch (currentTank.direction) {
+            case Up -> angle = 180;
+            case Down -> angle = 0;
+            case Left -> angle = 90;
+            case Right -> angle = -90;
+        }
+
+        double sin = Math.abs(Math.sin(Math.toRadians(angle))),
+                cos = Math.abs(Math.cos(Math.toRadians(angle)));
+        int w = bimg.getWidth();
+        int h = bimg.getHeight();
+        int neww = (int) Math.floor(w * cos + h * sin),
+                newh = (int) Math.floor(h * cos + w * sin);
+        BufferedImage rotated = new BufferedImage(neww, newh, bimg.getType());
+        Graphics2D graphic = rotated.createGraphics();
+        graphic.translate((neww - w) / 2, (newh - h) / 2);
+        graphic.rotate(Math.toRadians(angle), w / 2, h / 2);
+        graphic.drawRenderedImage(bimg, null);
+        graphic.dispose();
+        return rotated;
     }
 }

@@ -2,7 +2,11 @@ package main.model;
 
 import main.gui.GameWindow;
 
+import javax.swing.*;
+
 public class Missile extends MovingObject {
+    JLabel thisMissleJLabel = new JLabel();
+
     public Missile () {
         this.direction = null;
         this.position = null;
@@ -125,4 +129,8 @@ public class Missile extends MovingObject {
             }
         }
     }
+
+    public Field getMissilePosition() {return this.position;}
+
+    public JLabel getThisMissileJLabel() {return this.thisMissleJLabel;}
 }

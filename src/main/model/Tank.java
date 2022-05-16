@@ -2,12 +2,15 @@ package main.model;
 
 import main.gui.GameWindow;
 
+import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.util.Random;
 
 public class Tank extends MovingObject {
     public boolean destroyed;
     public Player owner;
+
+    private JLabel thisTankJLabel = new JLabel();
 
     public Tank() {
         Battlefield presentBattlefield = GameWindow.getBattlefield();
@@ -128,4 +131,7 @@ public class Tank extends MovingObject {
         this.destroyed = true;
         hitMissile = null;
     }
+
+    public JLabel getThisTankJLabel() {return this.thisTankJLabel;}
+
 }
