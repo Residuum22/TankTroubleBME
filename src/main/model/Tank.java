@@ -24,7 +24,7 @@ public class Tank extends MovingObject {
         this.position = presentFields[RandomXCoordinate][RandomYCoordinate];
 
         int directionTypeNum = rand.nextInt(4);
-        switch(directionTypeNum) {
+        switch (directionTypeNum) {
             case 0 -> this.direction = Direction.Right;
             case 1 -> this.direction = Direction.Left;
             case 2 -> this.direction = Direction.Up;
@@ -42,9 +42,9 @@ public class Tank extends MovingObject {
         int TankYCoordinate = this.position.getY();
         Missile missile = new Missile();
         missile.direction = this.direction;
-        switch (direction){
+        switch (direction) {
             case Right -> {
-                if (presentFields[TankXCoordinate + 1][TankYCoordinate].getType() == Field.FieldType.Road ) {
+                if (presentFields[TankXCoordinate + 1][TankYCoordinate].getType() == Field.FieldType.Road) {
                     missile.position = presentFields[TankXCoordinate + 1][TankYCoordinate];
                     GameWindow.setBattlefieldMissile(missile);
                 } else {
@@ -52,7 +52,7 @@ public class Tank extends MovingObject {
                 }
             }
             case Left -> {
-                if (presentFields[TankXCoordinate - 1][TankYCoordinate].getType() == Field.FieldType.Road ) {
+                if (presentFields[TankXCoordinate - 1][TankYCoordinate].getType() == Field.FieldType.Road) {
                     missile.position = presentFields[TankXCoordinate - 1][TankYCoordinate];
                     GameWindow.setBattlefieldMissile(missile);
                 } else {
@@ -60,7 +60,7 @@ public class Tank extends MovingObject {
                 }
             }
             case Up -> {
-                if (presentFields[TankXCoordinate][TankYCoordinate - 1].getType() == Field.FieldType.Road ) {
+                if (presentFields[TankXCoordinate][TankYCoordinate - 1].getType() == Field.FieldType.Road) {
                     missile.position = presentFields[TankXCoordinate][TankYCoordinate - 1];
                     GameWindow.setBattlefieldMissile(missile);
                 } else {
@@ -114,6 +114,14 @@ public class Tank extends MovingObject {
                 this.direction = Direction.Down;
             }
         }
+    }
+
+    public Field getTankPosition() {
+        return this.position;
+    }
+
+    public Direction getTankDirection() {
+        return this.direction;
     }
 
     public void destroyTank(Missile hitMissile) {
