@@ -15,7 +15,7 @@ public class TankTrouble {
 
     private Room ownRoom = null;
     private final ArrayList<Room> listOfRemoteRooms = new ArrayList<>();
-    private final Player thisPlayer = new Player();
+    private Player thisPlayer = new Player();
 
     public static Battlefield myBattlefield = GameWindow.getBattlefield();
 
@@ -97,22 +97,66 @@ public class TankTrouble {
         GameWindow asd = new GameWindow();
         asd.drawBattlefield();
 
+        try {
+            Thread.sleep(7000);
+        }catch (Exception e) {
+            //
+        }
 
         Field[][] myFields = myBattlefield.getFields();
         myBattlefield.listOfTanks.add(new Tank());
         Tank myTank = myBattlefield.getListOfTanks().get(0);
         myTank.owner = TankTrouble.mainGame.getThisPlayer();
         myTank.direction = MovingObject.Direction.Down;
-        myTank.shootMissile();
         asd.updateTank();
-//        Missile myMissile = myBattlefield.getListOfMissiles().get(0);
-//        myBattlefield.listOfTanks.add(new Tank());
-//        Tank enemyTank = myBattlefield.getListOfTanks().get(1);
-//        enemyTank.position = myFields[myMissile.position.getX()][myMissile.position.getY() - 2];
-//        myMissile.updateMissilePosition();
-//        myMissile.updateMissilePosition();
-//        int missileSize = myBattlefield.getListOfMissiles().size();
-//        int tankSize = myBattlefield.getListOfTanks().size();
+
+        try {
+            Thread.sleep(1000);
+        }catch (Exception e) {
+            //
+        }
+        myTank.shootMissile();
+        Missile myMissile = myBattlefield.getListOfMissiles().get(0);
+        myBattlefield.listOfTanks.add(new Tank());
+        Tank enemyTank = myBattlefield.getListOfTanks().get(1);
+        enemyTank.position = myFields[myMissile.position.getX()][myMissile.position.getY() - 2];
+        asd.updateMissile();
+        try {
+            Thread.sleep(2000);
+        }catch (Exception e) {
+            //
+        }
+        myMissile.updateMissilePosition();
+        asd.updateMissile();
+        try {
+            Thread.sleep(2000);
+        }catch (Exception e) {
+            //
+        }
+        myMissile.updateMissilePosition();
+        asd.updateMissile();
+        try {
+            Thread.sleep(2000);
+        }catch (Exception e) {
+            //
+        }
+        myMissile.updateMissilePosition();
+        asd.updateMissile();
+        try {
+            Thread.sleep(2000);
+        }catch (Exception e) {
+            //
+        }
+        myMissile.updateMissilePosition();
+        asd.updateMissile();
+        try {
+            Thread.sleep(2000);
+        }catch (Exception e) {
+            //
+        }
+        asd.updateMissile();
+        int missileSize = myBattlefield.getListOfMissiles().size();
+        int tankSize = myBattlefield.getListOfTanks().size();
 
 
 

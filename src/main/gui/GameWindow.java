@@ -107,7 +107,8 @@ public class GameWindow {
     }
 
     public void updateScreen() {
-        arenaPanel.revalidate();
+        this.updateTank();
+        this.updateMissile();
     }
 
     public void updateTank() {
@@ -171,7 +172,7 @@ public class GameWindow {
             try {
                 final String logoPath = "src\\main\\gui\\resources\\";
                 BufferedImage mainMenuLogo;
-                mainMenuLogo = ImageIO.read(new File(logoPath + "very_very_low_effort_tank.png"));
+                mainMenuLogo = ImageIO.read(new File(logoPath + "very_very_low_effort_missile.png"));
                 mainMenuLogoLabel.setIcon(new ImageIcon(mainMenuLogo.getScaledInstance(16, 16, Image.SCALE_DEFAULT)));
                 tmpJPanel.add(mainMenuLogoLabel);
             } catch (IOException ioe) {
