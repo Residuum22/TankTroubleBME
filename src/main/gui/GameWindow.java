@@ -34,6 +34,7 @@ public class GameWindow {
                     ":(", JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION){
                 //Todo network controller action (put here)
+                TankTrouble.mainGame.networkController.leaveGame();
                 gameWindowFrame.dispose();
                 TankTrouble.waitForGameStartWindow.setWaitForGameStartWindowFrameVisible();
             }

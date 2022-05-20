@@ -112,7 +112,7 @@ public class ListRoomsWindow {
      * @param chosenRoom This parameter is the chosen room instance.
      */
     public void joinChosenRoom(Room chosenRoom) {
-        // Todo fill this after network controller
+        // Todo - done - fill this after network controller
 
         boolean joinSuccessful = TankTrouble.mainGame.networkController.joinRoom(chosenRoom);
 

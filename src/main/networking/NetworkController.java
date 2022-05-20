@@ -102,21 +102,7 @@ public class NetworkController extends Thread {
 
     public void leaveLobby() {
         if(this.clientThread != null) {
-            this.clientThread.interrupt();
-            if(this.clientObjectInputStream != null) {
-                try {
-                    this.clientObjectInputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if(this.clientObjectOutputStream != null) {
-                try {
-                    this.clientObjectOutputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            this.stopClientFunctions();
         }
         if(TankTrouble.mainGame.hasOwnRoom()) {
             this.closeRoom();
@@ -130,4 +116,28 @@ public class NetworkController extends Thread {
             t.startGame();
         }
     }
+
+    public void leaveGame() {
+        this.stopClientFunctions();
+        this.startDiscovery();
+    }
+
+    private void stopClientFunctions() {
+        this.clientThread.interrupt();
+        if(this.clientObjectInputStream != null) {
+            try {
+                this.clientObjectInputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if(this.clientObjectOutputStream != null) {
+            try {
+                this.clientObjectOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
+

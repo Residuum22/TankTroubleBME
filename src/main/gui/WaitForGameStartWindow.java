@@ -38,7 +38,7 @@ public class WaitForGameStartWindow {
     public void setWaitForGameStartWindowFrameVisible() {waitForGameStartWindowFrame.setVisible(true);}
 
     public void leaveRoom() {
-        //Todo network controller
+        //Todo - done - network controller
         waitForGameStartWindowFrame.dispose();
         TankTrouble.mainGame.networkController.leaveLobby();
         TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();
@@ -50,7 +50,7 @@ public class WaitForGameStartWindow {
         TankTrouble.gameWindow = new GameWindow();
         TankTrouble.gameWindow.generateBattleField();
         TankTrouble.gameWindow.drawBattlefield();
-        //Todo network controller
+        //Todo - done - network controller
         TankTrouble.mainGame.networkController.broadcastGameStarting();
     }
 
@@ -59,7 +59,7 @@ public class WaitForGameStartWindow {
     }
 
     public void updateJoinedPlayerList(ArrayList<Player> list) {
-        //todo network controller
+        //todo - done - network controller
 
         int lengthOfPlayerArrayList = list.size();
         playerListPanel.removeAll();

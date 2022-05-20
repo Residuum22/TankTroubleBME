@@ -46,7 +46,7 @@ public class CreateRoomWindow {
     }
 
     public void createRoom(String roomName, int slots) {
-        //Todo wait for network controller
+        //Todo - done - wait for network controller
         Room room = new Room(
                 Room.RoomType.Host,
                 roomName,
