@@ -37,6 +37,8 @@ public class CreateRoomWindow {
     }
 
     public void backToMainMenuWindow() {
+        TankTrouble.mainGame.networkController.startDiscovery();
+        TankTrouble.mainGame.networkController.startExternalDiscoveryService();
         TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();
     }
 
@@ -51,6 +53,7 @@ public class CreateRoomWindow {
                 null);
         TankTrouble.mainGame.addNewOwnRoom(room);
         TankTrouble.mainGame.networkController.stopDiscovery();
+        TankTrouble.mainGame.networkController.startExternalDiscoveryService();
         TankTrouble.waitForGameStartWindow = new WaitForGameStartWindow();
     }
 

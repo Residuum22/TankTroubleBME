@@ -3,20 +3,21 @@ package main.networking;
 import main.TankTrouble;
 import main.model.Room;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
 public class DiscoveryService extends Thread {
     private final boolean logEnabled = true;
-    private final int pingTimeout = 50;
-    private final int discoveryRoundDelay = 1000;
-    private final int roomCheckTimeout = 100;
+    private final int pingTimeout = 5;
+    private final int discoveryRoundDelay = 100;
+    private final int roomCheckTimeout = 50;
     private ArrayList<Room> foundRooms;
     private boolean discoveryActive = true;
+    private boolean externalDiscoveryActive = false;
+    ServerSocket serverSocket = null;
+    Socket socket = null;
 
     public DiscoveryService() {
         this.start();
@@ -53,8 +54,39 @@ public class DiscoveryService extends Thread {
                     }
                 }
                 this.foundRooms = foundRoomsTmp;
+                TankTrouble.mainGame.addNewListOfRemoteRooms(this.foundRooms);
+
                 if (this.logEnabled) {
                     System.out.println("Discovery cycle done.");
+                }
+            }
+
+            if(this.externalDiscoveryActive) {
+                if (this.logEnabled) {
+                    System.out.println("Listening to external room discovery requests...");
+                }
+
+                try {
+                    this.serverSocket = new ServerSocket(NetworkController.roomDiscoveryPort);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    this.socket = this.serverSocket.accept();
+
+                    if (this.logEnabled) {
+                        System.out.println("Sending room data to someone...");
+                    }
+
+                    OutputStream outputStream = socket.getOutputStream();
+                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+                    objectOutputStream.writeObject(TankTrouble.mainGame.getOwnRoom());
+
+                    this.socket.close();
+                    this.serverSocket.close();
+                } catch (IOException e) {
+                    System.out.println("Server stopped or I/O error: " + e);
                 }
             }
 
@@ -156,5 +188,19 @@ public class DiscoveryService extends Thread {
 
     public void stopDiscovery() {
         this.discoveryActive = false;
+    }
+
+    public void startExternalDiscoveryService() {
+        this.externalDiscoveryActive = true;
+    }
+
+    public void stopExternalDiscoveryService() {
+        this.externalDiscoveryActive = false;
+
+        try {
+            this.serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

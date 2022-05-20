@@ -43,4 +43,12 @@ public class NetworkController extends Thread {
     public void stopDiscovery() {
         this.discoveryService.stopDiscovery();
     }
+
+    public void startExternalDiscoveryService() {
+        this.discoveryService.startExternalDiscoveryService();
+    }
+
+    public void stopExternalDiscoveryService() {
+        this.discoveryService.stopExternalDiscoveryService();
+    }
 }
