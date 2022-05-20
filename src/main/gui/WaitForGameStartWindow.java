@@ -15,12 +15,14 @@ public class WaitForGameStartWindow {
     private JButton startGameButton;
     private JPanel playerListPanel;
 
-    ArrayList<Player> joinedPlayerList = new ArrayList<>();
-
     public WaitForGameStartWindow() {
         waitForGameStartWindowFrame = new JFrame("Lobby");
         waitForGameStartWindowFrame.setSize(1024, 720);
         waitForGameStartWindowFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+        if(!TankTrouble.mainGame.hasOwnRoom()) {
+            startGameButton.setVisible(false);
+        }
 
         leaveButton.addActionListener(e -> {
             leaveRoom();
@@ -39,8 +41,7 @@ public class WaitForGameStartWindow {
     public void leaveRoom() {
         //Todo network controller
         waitForGameStartWindowFrame.dispose();
-        TankTrouble.mainGame.networkController.stopExternalDiscoveryService();
-        TankTrouble.mainGame.networkController.startDiscovery();
+        TankTrouble.mainGame.networkController.leaveLobby();
         TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();
     }
 
@@ -52,17 +53,17 @@ public class WaitForGameStartWindow {
         //Todo network controller
     }
 
-    public void updateJoinedPlayerList(ArrayList<Player> updatedList) {
-        //todo network controller -> updateLobby()
-        joinedPlayerList.removeAll(joinedPlayerList);
-        joinedPlayerList.addAll(updatedList);
+    public void updateJoinedPlayerList(ArrayList<Player> list) {
+        //todo network controller
 
-        int lengthOfPlayerArrayList = joinedPlayerList.size();
+        int lengthOfPlayerArrayList = list.size();
+        playerListPanel.removeAll();
         playerListPanel.setLayout(new GridLayout(lengthOfPlayerArrayList, 1));
-        for (Player currentPlayer : joinedPlayerList) {
+        for (Player currentPlayer : list) {
             JLabel playerElement = new JLabel(currentPlayer.name);
-            playerElement.setBackground(Color.white);
+            playerElement.setBackground(Color.BLUE);
             playerListPanel.add(playerElement);
         }
+        playerListPanel.updateUI();
     }
 }

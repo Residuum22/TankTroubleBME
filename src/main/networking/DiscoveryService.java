@@ -175,9 +175,9 @@ public class DiscoveryService extends Thread {
             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
             room = (Room) objectInputStream.readObject();
             room.ip = (Inet4Address) Inet4Address.getByName(host);
-        } catch (ConnectException e) {
+        } catch (ConnectException | SocketTimeoutException e) {
             if(this.logEnabled) {
-                System.out.println("Connection refused on " + host);
+                System.out.println("Connection refused or timed out on " + host);
             }
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
@@ -202,7 +202,9 @@ public class DiscoveryService extends Thread {
         this.externalDiscoveryActive = false;
 
         try {
-            this.serverSocket.close();
+            if(serverSocket != null) {
+                this.serverSocket.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

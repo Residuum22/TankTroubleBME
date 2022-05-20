@@ -7,8 +7,8 @@ public class Message implements Serializable {
         joinRequest,
         joinAccepted,
         joinDeclined,
-        lobbyUpdateRequest,
-        lobbyUpdateResponse
+        lobbyUpdate,
+        serverClosing
     }
 
     public Object data;

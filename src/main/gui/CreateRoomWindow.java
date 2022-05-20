@@ -41,7 +41,7 @@ public class CreateRoomWindow {
 
     public void backToMainMenuWindow() {
         TankTrouble.mainGame.networkController.startDiscovery();
-        TankTrouble.mainGame.networkController.startExternalDiscoveryService();
+        TankTrouble.mainGame.networkController.stopExternalDiscoveryService();
         TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();
     }
 
@@ -54,10 +54,13 @@ public class CreateRoomWindow {
                 new ArrayList<>(),
                 slots,
                 null);
+        room.joinedPlayers.add(TankTrouble.mainGame.getThisPlayer());
         TankTrouble.mainGame.addNewOwnRoom(room);
         TankTrouble.mainGame.networkController.stopDiscovery();
         TankTrouble.mainGame.networkController.startExternalDiscoveryService();
         TankTrouble.waitForGameStartWindow = new WaitForGameStartWindow();
+        TankTrouble.waitForGameStartWindow.updateJoinedPlayerList(TankTrouble.mainGame.getOwnRoom().joinedPlayers);
+
     }
 
 }

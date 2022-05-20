@@ -11,37 +11,19 @@ import java.util.ArrayList;
 public class NetworkController extends Thread {
     public static final int roomDiscoveryPort = 9981;
     public static final int Port = 5000;
-    private Socket remoteRoomSocket;
+    private ObjectInputStream clientObjectInputStream;
+    private ObjectOutputStream clientObjectOutputStream;
 
     private final DiscoveryService discoveryService = new DiscoveryService();
+    private final ConnectionHandlerThread connectionHandler = new ConnectionHandlerThread();
+    private ClientThread clientThread = null;
+
+    public ArrayList<ServerThread> activeConnections = new ArrayList<>();
 
     public NetworkController() {
-        this.start();
+
     }
 
-    @Override
-    public void run() {
-        ServerSocket serverSocket = null;
-        Socket socket = null;
-
-        try {
-            serverSocket = new ServerSocket(NetworkController.Port);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        while (true) {
-            try {
-                assert serverSocket != null;
-                socket = serverSocket.accept();
-            } catch (IOException e) {
-                System.out.println("I/O error: " + e);
-            }
-
-            new ServerThread(socket).start();
-            System.out.println("Got new connection");
-        }
-    }
 
     public void startDiscovery() {
         this.discoveryService.startDiscovery();
@@ -52,11 +34,19 @@ public class NetworkController extends Thread {
     }
 
     public void startExternalDiscoveryService() {
+        connectionHandler.start();
         this.discoveryService.startExternalDiscoveryService();
     }
 
     public void stopExternalDiscoveryService() {
         this.discoveryService.stopExternalDiscoveryService();
+    }
+
+    public void closeRoom() {
+        connectionHandler.interrupt();
+        for(ServerThread t : this.activeConnections) {
+            t.stopServer();
+        }
     }
 
     public boolean joinRoom(Room room) {
@@ -65,11 +55,17 @@ public class NetworkController extends Thread {
 
         try {
             socket = new Socket(room.ip, NetworkController.Port);
+            socket.setSoTimeout(100);
+            OutputStream outputStream = socket.getOutputStream();
+            InputStream inputStream = socket.getInputStream();
+            this.clientObjectOutputStream = new ObjectOutputStream(outputStream);
+            this.clientObjectInputStream = new ObjectInputStream(inputStream);
+
             Message msg = new Message(Message.MessageType.joinRequest, TankTrouble.mainGame.getThisPlayer());
-            Message result = this.sendMessageGetResponse(socket, msg);
+            Message result = this.sendMessageGetResponse(msg);
 
             if(result != null && result.type == Message.MessageType.joinAccepted) {
-                this.remoteRoomSocket = socket;
+                this.clientThread = new ClientThread(this.clientObjectInputStream, this.clientObjectOutputStream);
                 return true;
             }
         } catch (IOException e) {
@@ -79,17 +75,10 @@ public class NetworkController extends Thread {
         return false;
     }
 
-    private Message sendMessageGetResponse(Socket socket, Message msg) {
+    private Message sendMessageGetResponse(Message msg) {
         try {
-            OutputStream outputStream = socket.getOutputStream();
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-            InputStream inputStream = socket.getInputStream();
-            ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-
-            socket.setSoTimeout(100);
-            objectOutputStream.writeObject(msg);
-
-            return (Message) objectInputStream.readObject();
+            this.clientObjectOutputStream.writeObject(msg);
+            return  (Message) this.clientObjectInputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -111,15 +100,28 @@ public class NetworkController extends Thread {
         return new Message(Message.MessageType.joinDeclined, null);
     }
 
-    public ArrayList<Player> updateLobby() {
-        Message msg = new Message(Message.MessageType.lobbyUpdateRequest, null);
-        Message response = this.sendMessageGetResponse(this.remoteRoomSocket, msg);
-        return (ArrayList<Player>) response.data;
+    public void leaveLobby() {
+        if(this.clientThread != null) {
+            this.clientThread.interrupt();
+            if(this.clientObjectInputStream != null) {
+                try {
+                    this.clientObjectInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(this.clientObjectOutputStream != null) {
+                try {
+                    this.clientObjectOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if(TankTrouble.mainGame.hasOwnRoom()) {
+            this.closeRoom();
+        }
+        this.stopExternalDiscoveryService();
+        this.startDiscovery();
     }
-
-    public static Message handleLobbyUpdateRequest() {
-        System.out.println("Sending lobby update");
-        return new Message(Message.MessageType.lobbyUpdateResponse, TankTrouble.mainGame.getOwnRoom().joinedPlayers);
-    }
-
 }

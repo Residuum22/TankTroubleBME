@@ -114,9 +114,15 @@ public class ListRoomsWindow {
     public void joinChosenRoom(Room chosenRoom) {
         // Todo fill this after network controller
 
-        TankTrouble.mainGame.networkController.joinRoom(chosenRoom);
+        boolean joinSuccessful = TankTrouble.mainGame.networkController.joinRoom(chosenRoom);
 
-        // Todo handle (boolean) response
+        if(joinSuccessful) {
+            listRoomsWindowFrame.dispose();
+            TankTrouble.waitForGameStartWindow = new WaitForGameStartWindow();
+            return;
+        }
+
+        JOptionPane.showMessageDialog(null, "Server declined join request.");
     }
 
     /**

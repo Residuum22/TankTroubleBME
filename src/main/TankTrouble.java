@@ -69,6 +69,10 @@ public class TankTrouble {
         return ownRoom;
     }
 
+    public boolean hasOwnRoom() {
+        return ownRoom != null;
+    }
+
     /**
      * This function returns the player's username who is playing with this TankTrouble client.
      * @return The current player username
