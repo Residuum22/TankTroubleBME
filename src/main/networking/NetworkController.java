@@ -15,8 +15,8 @@ public class NetworkController extends Thread {
     private ObjectOutputStream clientObjectOutputStream;
 
     private final DiscoveryService discoveryService = new DiscoveryService();
-    private final ConnectionHandlerThread connectionHandler = new ConnectionHandlerThread();
-    private ClientThread clientThread = null;
+    private IncomingConnectionHandlerThread incomingConnectionHandlerThread = null;
+    private ClientReceiveThread clientReceiveThread = null;
 
     public ArrayList<ServerThread> activeConnections = new ArrayList<>();
 
@@ -34,7 +34,8 @@ public class NetworkController extends Thread {
     }
 
     public void startExternalDiscoveryService() {
-        connectionHandler.start();
+        this.incomingConnectionHandlerThread = new IncomingConnectionHandlerThread();
+        this.incomingConnectionHandlerThread.start();
         this.discoveryService.startExternalDiscoveryService();
     }
 
@@ -43,7 +44,7 @@ public class NetworkController extends Thread {
     }
 
     public void closeRoom() {
-        connectionHandler.interrupt();
+        this.incomingConnectionHandlerThread.stopListening();
         for(ServerThread t : this.activeConnections) {
             t.stopServer();
         }
@@ -65,7 +66,7 @@ public class NetworkController extends Thread {
             Message result = this.sendMessageGetResponse(msg);
 
             if(result != null && result.type == Message.MessageType.joinAccepted) {
-                this.clientThread = new ClientThread(this.clientObjectInputStream, this.clientObjectOutputStream);
+                this.clientReceiveThread = new ClientReceiveThread(this.clientObjectInputStream, this.clientObjectOutputStream);
                 return true;
             }
         } catch (IOException e) {
@@ -101,7 +102,7 @@ public class NetworkController extends Thread {
     }
 
     public void leaveLobby() {
-        if(this.clientThread != null) {
+        if(this.clientReceiveThread != null) {
             this.stopClientFunctions();
         }
         if(TankTrouble.mainGame.hasOwnRoom()) {
@@ -123,7 +124,9 @@ public class NetworkController extends Thread {
     }
 
     private void stopClientFunctions() {
-        this.clientThread.interrupt();
+        if(this.clientReceiveThread != null) {
+            this.clientReceiveThread.interrupt();
+        }
         if(this.clientObjectInputStream != null) {
             try {
                 this.clientObjectInputStream.close();

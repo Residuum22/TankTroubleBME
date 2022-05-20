@@ -59,7 +59,7 @@ public class ClientThread extends Thread{
 
                 synchronized (this) {
                     try {
-                        this.wait(50);
+                        this.wait(1);
                     } catch (InterruptedException e) {
                         this.isRunning = false;
                     }
