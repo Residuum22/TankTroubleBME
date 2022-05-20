@@ -16,7 +16,7 @@ public class ServerThread extends Thread {
     private enum ServerState {
         stopping,
         waitingForPlayersToJoin,
-        gameInProgess, startingBattle
+        gameInProgress, startingBattle
     }
     private ServerState serverState;
     private Player remotePlayer = null;
@@ -62,16 +62,16 @@ public class ServerThread extends Thread {
                     }
                     case startingBattle -> {
                         this.sendStartingMessage();
-                        this.serverState = ServerState.gameInProgess;
+                        this.serverState = ServerState.gameInProgress;
                     }
-                    case gameInProgess -> {
+                    case gameInProgress -> {
 
                     }
                 }
 
                 synchronized (this) {
                     try {
-                        this.wait(50);
+                        this.wait(serverState == ServerState.waitingForPlayersToJoin ? 100 : 1);
                     } catch (InterruptedException e) {
                         this.isRunning = false;
                     }
