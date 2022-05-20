@@ -5,8 +5,10 @@ import java.io.Serializable;
 public class Message implements Serializable {
     public enum MessageType {
         joinRequest,
-        joinAccept,
-        joinDecline
+        joinAccepted,
+        joinDeclined,
+        lobbyUpdateRequest,
+        lobbyUpdateResponse
     }
 
     public Object data;

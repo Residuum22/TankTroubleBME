@@ -1,9 +1,12 @@
 package main.gui;
 
 import main.TankTrouble;
+import main.model.Player;
 import main.model.Room;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CreateRoomWindow {
 
@@ -48,7 +51,7 @@ public class CreateRoomWindow {
                 Room.RoomType.Host,
                 roomName,
                 TankTrouble.mainGame.getThisPlayer(),
-                null,
+                new ArrayList<>(),
                 slots,
                 null);
         TankTrouble.mainGame.addNewOwnRoom(room);

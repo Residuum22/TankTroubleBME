@@ -39,6 +39,7 @@ public class WaitForGameStartWindow {
     public void leaveRoom() {
         //Todo network controller
         waitForGameStartWindowFrame.dispose();
+        TankTrouble.mainGame.networkController.stopExternalDiscoveryService();
         TankTrouble.mainGame.networkController.startDiscovery();
         TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();
     }
@@ -52,7 +53,7 @@ public class WaitForGameStartWindow {
     }
 
     public void updateJoinedPlayerList(ArrayList<Player> updatedList) {
-        //todo network controller
+        //todo network controller -> updateLobby()
         joinedPlayerList.removeAll(joinedPlayerList);
         joinedPlayerList.addAll(updatedList);
 

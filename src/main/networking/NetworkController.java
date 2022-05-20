@@ -4,16 +4,16 @@ import main.TankTrouble;
 import main.model.Player;
 import main.model.Room;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 public class NetworkController extends Thread {
     public static final int roomDiscoveryPort = 9981;
     public static final int Port = 5000;
+    private Socket remoteRoomSocket;
 
-    private DiscoveryService discoveryService = new DiscoveryService();
+    private final DiscoveryService discoveryService = new DiscoveryService();
 
     public NetworkController() {
         this.start();
@@ -25,13 +25,14 @@ public class NetworkController extends Thread {
         Socket socket = null;
 
         try {
-            serverSocket = new ServerSocket(this.Port);
+            serverSocket = new ServerSocket(NetworkController.Port);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         while (true) {
             try {
+                assert serverSocket != null;
                 socket = serverSocket.accept();
             } catch (IOException e) {
                 System.out.println("I/O error: " + e);
@@ -60,24 +61,17 @@ public class NetworkController extends Thread {
 
     public boolean joinRoom(Room room) {
         System.out.println("Joining " + room.name + " room");
-        return this.sendJoinRequest(room);
-    }
+        Socket socket;
 
-    public boolean sendJoinRequest(Room room) {
-        Message msg = new Message(Message.MessageType.joinRequest, TankTrouble.mainGame.getThisPlayer());
-        return this.sendMessage(room.ip, this.Port, msg);
-    }
+        try {
+            socket = new Socket(room.ip, NetworkController.Port);
+            Message msg = new Message(Message.MessageType.joinRequest, TankTrouble.mainGame.getThisPlayer());
+            Message result = this.sendMessageGetResponse(socket, msg);
 
-    private boolean sendMessage(Inet4Address ip, int port, Message msg) {
-        try (Socket socket = new Socket(ip, port)) {
-            OutputStream outputStream = socket.getOutputStream();
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-            objectOutputStream.writeObject(msg);
-
-            socket.setSoTimeout(500);
-            return socket.getInputStream().read() == 1;
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+            if(result != null && result.type == Message.MessageType.joinAccepted) {
+                this.remoteRoomSocket = socket;
+                return true;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -85,7 +79,24 @@ public class NetworkController extends Thread {
         return false;
     }
 
-    public static boolean handleExternalJoinRequest(Object data, InetAddress address) {
+    private Message sendMessageGetResponse(Socket socket, Message msg) {
+        try {
+            OutputStream outputStream = socket.getOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+            InputStream inputStream = socket.getInputStream();
+            ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+
+            socket.setSoTimeout(100);
+            objectOutputStream.writeObject(msg);
+
+            return (Message) objectInputStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Message handleExternalJoinRequest(Object data, InetAddress address) {
         System.out.println("Received new connection request");
 
         Room ownRoom = TankTrouble.mainGame.getOwnRoom();
@@ -94,11 +105,21 @@ public class NetworkController extends Thread {
         if(ownRoom.joinedPlayers.size() < ownRoom.slots) {
             player.ip = (Inet4Address) address;
             ownRoom.joinedPlayers.add(player);
-
-            return true;
+            return new Message(Message.MessageType.joinAccepted, null);
         }
 
-        return false;
+        return new Message(Message.MessageType.joinDeclined, null);
+    }
+
+    public ArrayList<Player> updateLobby() {
+        Message msg = new Message(Message.MessageType.lobbyUpdateRequest, null);
+        Message response = this.sendMessageGetResponse(this.remoteRoomSocket, msg);
+        return (ArrayList<Player>) response.data;
+    }
+
+    public static Message handleLobbyUpdateRequest() {
+        System.out.println("Sending lobby update");
+        return new Message(Message.MessageType.lobbyUpdateResponse, TankTrouble.mainGame.getOwnRoom().joinedPlayers);
     }
 
 }
