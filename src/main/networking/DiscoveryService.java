@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 
 public class DiscoveryService extends Thread {
-    private final boolean logEnabled = true;
+    private final boolean logEnabled = false;
     private final int pingTimeout = 5;
     private final int discoveryRoundDelay = 100;
     private final int roomCheckTimeout = 50;
@@ -144,7 +144,9 @@ public class DiscoveryService extends Thread {
 
         for (int i = 1; i < 255; i++) {
             String host = subnet + "." + i;
-            System.out.println("Testing " + host);
+            if(this.logEnabled) {
+                System.out.println("Testing " + host);
+            }
             try {
                 if (InetAddress.getByName(host).isReachable(pingTimeout)) {
                     if (this.logEnabled) {
@@ -153,7 +155,9 @@ public class DiscoveryService extends Thread {
                     reachable.add(host);
                 }
             } catch (ConnectException e) {
-                System.out.println("Connection refused on " + host);
+                if(this.logEnabled) {
+                    System.out.println("Connection refused on " + host);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

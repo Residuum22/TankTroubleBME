@@ -113,6 +113,8 @@ public class ListRoomsWindow {
      */
     public void joinChosenRoom(Room chosenRoom) {
         //Todo fill this after network controller
+
+        TankTrouble.mainGame.networkController.joinRoom(chosenRoom);
     }
 
     /**
