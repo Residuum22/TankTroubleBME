@@ -17,7 +17,7 @@ public class WaitForGameStartWindow {
     public WaitForGameStartWindow() {
         waitForGameStartWindowFrame = new JFrame("Lobby");
         waitForGameStartWindowFrame.setSize(1024, 720);
-        waitForGameStartWindowFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        waitForGameStartWindowFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         if(!TankTrouble.mainGame.hasOwnRoom()) {
             startGameButton.setVisible(false);
@@ -38,7 +38,6 @@ public class WaitForGameStartWindow {
     public void setWaitForGameStartWindowFrameVisible() {waitForGameStartWindowFrame.setVisible(true);}
 
     public void leaveRoom() {
-        //Todo - done - network controller
         waitForGameStartWindowFrame.dispose();
         TankTrouble.mainGame.networkController.leaveLobby();
         TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();

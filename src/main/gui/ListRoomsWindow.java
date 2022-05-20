@@ -25,7 +25,7 @@ public class ListRoomsWindow {
     public ListRoomsWindow() {
         listRoomsWindowFrame = new JFrame("Tank Trouble Game");
         listRoomsWindowFrame.setSize(1024, 720);
-        listRoomsWindowFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        listRoomsWindowFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         addActionListeners();
 
