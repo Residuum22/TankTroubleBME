@@ -12,9 +12,11 @@ public class ServerThread extends Thread {
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
     private boolean isRunning;
+
     private enum ServerState {
         stopping,
-        waitingForPlayersToJoin
+        waitingForPlayersToJoin,
+        gameInProgess, startingBattle
     }
     private ServerState serverState;
     private Player remotePlayer = null;
@@ -58,6 +60,13 @@ public class ServerThread extends Thread {
                         TankTrouble.mainGame.networkController.activeConnections.remove(this);
                         this.isRunning = false;
                     }
+                    case startingBattle -> {
+                        this.sendStartingMessage();
+                        this.serverState = ServerState.gameInProgess;
+                    }
+                    case gameInProgess -> {
+
+                    }
                 }
 
                 synchronized (this) {
@@ -93,7 +102,17 @@ public class ServerThread extends Thread {
         this.objectOutputStream.writeObject(message);
     }
 
+    private void sendStartingMessage() throws IOException {
+        Message message = new Message(Message.MessageType.serverStartingBattlefieldBuild,
+                TankTrouble.gameWindow.getBattleField());
+        this.objectOutputStream.writeObject(message);
+    }
+
     public void stopServer() {
         this.serverState = ServerState.stopping;
+    }
+
+    public void startGame() {
+        this.serverState = ServerState.startingBattle;
     }
 }

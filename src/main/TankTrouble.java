@@ -16,6 +16,7 @@ public class TankTrouble {
     public static TankTrouble mainGame = new TankTrouble();
     public static MainMenuWindow mainMenuWindow = new MainMenuWindow();
     public static WaitForGameStartWindow waitForGameStartWindow;
+    public static GameWindow gameWindow;
 
     private Room ownRoom = null;
     private ArrayList<Room> listOfRemoteRooms = new ArrayList<>();

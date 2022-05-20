@@ -8,7 +8,8 @@ public class Message implements Serializable {
         joinAccepted,
         joinDeclined,
         lobbyUpdate,
-        serverClosing
+        serverClosing,
+        serverStartingBattlefieldBuild
     }
 
     public Object data;

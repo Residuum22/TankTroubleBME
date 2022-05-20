@@ -1,6 +1,8 @@
 package main.networking;
 
 import main.TankTrouble;
+import main.gui.GameWindow;
+import main.model.Battlefield;
 import main.model.Player;
 
 import javax.swing.*;
@@ -43,6 +45,12 @@ public class ClientThread extends Thread{
                         case serverClosing -> {
                             JOptionPane.showMessageDialog(null, "Server stopped");
                             TankTrouble.waitForGameStartWindow.leaveRoom();
+                        }
+                        case serverStartingBattlefieldBuild -> {
+                            TankTrouble.waitForGameStartWindow.remoteGameStarted();
+                            TankTrouble.gameWindow = new GameWindow();
+                            TankTrouble.gameWindow.setBattleField((Battlefield) msg.data);
+                            TankTrouble.gameWindow.drawBattlefield();
                         }
                     }
                 } catch (SocketException | SocketTimeoutException e) {

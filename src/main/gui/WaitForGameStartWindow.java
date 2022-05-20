@@ -2,7 +2,6 @@ package main.gui;
 
 import main.TankTrouble;
 import main.model.Player;
-import main.model.Room;
 
 import javax.swing.*;
 import java.awt.*;
@@ -48,9 +47,15 @@ public class WaitForGameStartWindow {
     public void startGame() {
         // Here i hide the window only so when the game is over set visible again.
         waitForGameStartWindowFrame.setVisible(false);
-        GameWindow gameWindow = new GameWindow();
-        gameWindow.drawBattlefield();
+        TankTrouble.gameWindow = new GameWindow();
+        TankTrouble.gameWindow.generateBattleField();
+        TankTrouble.gameWindow.drawBattlefield();
         //Todo network controller
+        TankTrouble.mainGame.networkController.broadcastGameStarting();
+    }
+
+    public void remoteGameStarted() {
+        waitForGameStartWindowFrame.setVisible(false);
     }
 
     public void updateJoinedPlayerList(ArrayList<Player> list) {

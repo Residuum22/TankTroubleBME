@@ -124,4 +124,10 @@ public class NetworkController extends Thread {
         this.stopExternalDiscoveryService();
         this.startDiscovery();
     }
+
+    public void broadcastGameStarting() {
+        for(ServerThread t : this.activeConnections) {
+            t.startGame();
+        }
+    }
 }
