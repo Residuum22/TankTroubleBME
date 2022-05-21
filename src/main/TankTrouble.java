@@ -2,10 +2,10 @@ package main;
 
 import main.gui.GameWindow;
 import main.gui.MainMenuWindow;
-import main.networking.DiscoveryService;
+import main.gui.WaitForGameStartWindow;
+import main.model.*;
 import main.networking.NetworkController;
 
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class TankTrouble {
@@ -53,7 +53,6 @@ public class TankTrouble {
     }
 
     /**
-     * This function returns remote rooms which is avaliable of the current user on the same network.
      * @return The avaliable room's on the network.
      */
     public ArrayList<Room> getListOfRemoteRooms() {
@@ -105,7 +104,7 @@ public class TankTrouble {
         asd.drawBattlefield();
 
         try {
-            Thread.sleep(7000);
+            Thread.sleep(1000);
         }catch (Exception e) {
             //
         }
@@ -114,58 +113,10 @@ public class TankTrouble {
         myBattlefield.listOfTanks.add(new Tank());
         Tank myTank = myBattlefield.getListOfTanks().get(0);
         myTank.owner = TankTrouble.mainGame.getThisPlayer();
-        myTank.direction = MovingObject.Direction.Down;
-        asd.updateTank();
-
-        try {
-            Thread.sleep(1000);
-        }catch (Exception e) {
-            //
-        }
-        myTank.shootMissile();
-        Missile myMissile = myBattlefield.getListOfMissiles().get(0);
         myBattlefield.listOfTanks.add(new Tank());
         Tank enemyTank = myBattlefield.getListOfTanks().get(1);
-        enemyTank.position = myFields[myMissile.position.getX()][myMissile.position.getY() - 2];
-        asd.updateMissile();
-        try {
-            Thread.sleep(2000);
-        }catch (Exception e) {
-            //
-        }
-        myMissile.updateMissilePosition();
-        asd.updateMissile();
-        try {
-            Thread.sleep(2000);
-        }catch (Exception e) {
-            //
-        }
-        myMissile.updateMissilePosition();
-        asd.updateMissile();
-        try {
-            Thread.sleep(2000);
-        }catch (Exception e) {
-            //
-        }
-        myMissile.updateMissilePosition();
-        asd.updateMissile();
-        try {
-            Thread.sleep(2000);
-        }catch (Exception e) {
-            //
-        }
-        myMissile.updateMissilePosition();
-        asd.updateMissile();
-        try {
-            Thread.sleep(2000);
-        }catch (Exception e) {
-            //
-        }
-        asd.updateMissile();
-        int missileSize = myBattlefield.getListOfMissiles().size();
-        int tankSize = myBattlefield.getListOfTanks().size();
-
-
-
+        enemyTank.owner = new Player();
+        enemyTank.owner.setName("qwe");
+        asd.updateTank();
     }
 }

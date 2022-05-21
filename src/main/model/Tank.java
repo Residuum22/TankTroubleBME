@@ -84,10 +84,19 @@ public class Tank extends MovingObject {
     public void moveTankToNextPosition(int KeyCode) {
         Battlefield presentBattlefield = GameWindow.getBattlefield();
         Field[][] presentFields = presentBattlefield.getFields();
+        boolean thereIsTank = false;
         if (KeyCode == KeyEvent.VK_RIGHT) {
             if (this.direction == Direction.Right) {
                 if (presentFields[this.position.getX() + 1][this.position.getY()].getType() == Field.FieldType.Road) {
-                    this.position = presentFields[this.position.getX() + 1][this.position.getY()];
+                    for (int i = 0; i < presentBattlefield.listOfTanks.size(); i++) {
+                        if (presentBattlefield.listOfTanks.get(i).position.equals(presentFields[this.position.getX() + 1][this.position.getY()])) {
+                            thereIsTank = true;
+                            break;
+                        }
+                    }
+                    if(!thereIsTank) {
+                        this.position = presentFields[this.position.getX() + 1][this.position.getY()];
+                    }
                 }
             } else {
                 this.direction = Direction.Right;
@@ -95,7 +104,15 @@ public class Tank extends MovingObject {
         } else if (KeyCode == KeyEvent.VK_LEFT) {
             if (this.direction == Direction.Left) {
                 if (presentFields[this.position.getX() - 1][this.position.getY()].getType() == Field.FieldType.Road) {
-                    this.position = presentFields[this.position.getX() - 1][this.position.getY()];
+                    for (int i = 0; i < presentBattlefield.listOfTanks.size(); i++) {
+                        if (presentBattlefield.listOfTanks.get(i).position.equals(presentFields[this.position.getX() - 1][this.position.getY()])) {
+                            thereIsTank = true;
+                            break;
+                        }
+                    }
+                    if(!thereIsTank) {
+                        this.position = presentFields[this.position.getX() - 1][this.position.getY()];;
+                    }
                 }
             } else {
                 this.direction = Direction.Left;
@@ -103,7 +120,15 @@ public class Tank extends MovingObject {
         } else if (KeyCode == KeyEvent.VK_UP) {
             if (this.direction == Direction.Up) {
                 if (presentFields[this.position.getX()][this.position.getY() - 1].getType() == Field.FieldType.Road) {
-                    this.position = presentFields[this.position.getX()][this.position.getY() - 1];
+                    for (int i = 0; i < presentBattlefield.listOfTanks.size(); i++) {
+                        if (presentBattlefield.listOfTanks.get(i).position.equals(presentFields[this.position.getX()][this.position.getY() - 1])) {
+                            thereIsTank = true;
+                            break;
+                        }
+                    }
+                    if(!thereIsTank) {
+                        this.position = presentFields[this.position.getX()][this.position.getY() - 1];
+                    }
                 }
             } else {
                 this.direction = Direction.Up;
@@ -111,7 +136,15 @@ public class Tank extends MovingObject {
         } else if (KeyCode == KeyEvent.VK_DOWN) {
             if (this.direction == Direction.Down) {
                 if (presentFields[this.position.getX()][this.position.getY() + 1].getType() == Field.FieldType.Road) {
-                    this.position = presentFields[this.position.getX()][this.position.getY() + 1];
+                    for (int i = 0; i < presentBattlefield.listOfTanks.size(); i++) {
+                        if (presentBattlefield.listOfTanks.get(i).position.equals(presentFields[this.position.getX()][this.position.getY() + 1])) {
+                            thereIsTank = true;
+                            break;
+                        }
+                    }
+                    if(!thereIsTank) {
+                        this.position = presentFields[this.position.getX()][this.position.getY() + 1];
+                    }
                 }
             } else {
                 this.direction = Direction.Down;
@@ -130,6 +163,7 @@ public class Tank extends MovingObject {
     public void destroyTank(Missile hitMissile) {
         this.destroyed = true;
         hitMissile = null;
+        //todo question "Leave or stay?"
     }
 
     public JLabel getThisTankJLabel() {return this.thisTankJLabel;}

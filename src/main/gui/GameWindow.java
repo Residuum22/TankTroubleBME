@@ -1,7 +1,10 @@
 package main.gui;
 
 import main.TankTrouble;
-import main.model.*;
+import main.model.Battlefield;
+import main.model.Field;
+import main.model.Missile;
+import main.model.Tank;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -12,7 +15,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameWindow {
     /**
@@ -53,25 +57,57 @@ public class GameWindow {
             }
 
             public void keyPressed(KeyEvent e) {
+
+            }
+
+            public void keyReleased(KeyEvent e) {
+                // pressedKey(e);
                 int keyCode = e.getKeyCode();
                 for (int i = 0; i < thisGameBattleField.listOfTanks.size(); i++) {
                     if (thisGameBattleField.listOfTanks.get(i).owner.name.equals(TankTrouble.mainGame.getThisPlayerName())) {
                         switch (keyCode) {
-                            case KeyEvent.VK_RIGHT, KeyEvent.VK_LEFT, KeyEvent.VK_UP, KeyEvent.VK_DOWN -> thisGameBattleField.listOfTanks.get(i).moveTankToNextPosition(keyCode);
-                            case KeyEvent.VK_SPACE -> thisGameBattleField.listOfTanks.get(i).shootMissile();
+                            case KeyEvent.VK_RIGHT, KeyEvent.VK_LEFT, KeyEvent.VK_UP, KeyEvent.VK_DOWN -> {
+                                thisGameBattleField.listOfTanks.get(i).moveTankToNextPosition(keyCode);
+                                updateTank();
+                            }
+                            case KeyEvent.VK_SPACE -> {
+                                thisGameBattleField.listOfTanks.get(i).shootMissile();
+                                updateMissile();
+                            }
                         }
                     }
                 }
             }
-
-            public void keyReleased(KeyEvent e) {
-
-            }
         });
+
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                if (thisGameBattleField.listOfMissiles.size() != 0) {
+                    if (thisGameBattleField.listOfMissiles.size() == 1) {
+                        thisGameBattleField.listOfMissiles.get(0).updateMissilePosition();
+                    }
+                    else {
+                        for (int i = 0; i < thisGameBattleField.listOfMissiles.size(); i++) {
+                            thisGameBattleField.listOfMissiles.get(i).updateMissilePosition();
+                        }
+                    }
+                    updateMissile();
+                    updateTank();
+                    if (thisGameBattleField.listOfTanks.size() == 1) {
+                        //todo message box to winner
+                    }
+                }
+            }
+        }, 100, 150);
     }
 
+    // public void pressedKey(KeyEvent key) {
+    //     NetworkController.sendKeyPress(e);
+    // }
+
     public void generateBattleField() {
-        thisGameBattleField.generateBattleFieldPositioningXZCoordinate();
+        thisGameBattleField.generateBattleFieldPositioningXYCoordinate();
     }
 
     public Battlefield getBattleField() {
@@ -79,7 +115,7 @@ public class GameWindow {
     }
 
     public void setBattleField(Battlefield newBattlefield) {
-        this.thisGameBattleField = newBattlefield;
+        thisGameBattleField = newBattlefield;
     }
 
     public void drawBattlefield() {
