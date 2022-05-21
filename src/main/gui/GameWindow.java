@@ -162,6 +162,14 @@ public class GameWindow {
         for (Tank currentTank :
                 TankTrouble.myBattlefield.listOfTanks) {
 
+            JLabel mainMenuLogoLabel = currentTank.getThisTankJLabel();
+            try {
+                mainMenuLogoLabel.getParent().setBackground(Color.white);
+            } catch (NullPointerException e) {
+                // First run there will be this
+            }
+            arenaPanel.remove(mainMenuLogoLabel);
+
             Field currentTankField = currentTank.getTankPosition();
             JPanel tmpJPanel = jPanels[currentTankField.getX()][currentTankField.getY()];
 
@@ -174,16 +182,8 @@ public class GameWindow {
             tmpJPanel.setMinimumSize(new Dimension(16, 16));
             tmpJPanel.setPreferredSize(new Dimension(16, 16));
 
-            JLabel mainMenuLogoLabel = currentTank.getThisTankJLabel();
             try {
-                mainMenuLogoLabel.getParent().setBackground(Color.white);
-            } catch (NullPointerException e) {
-                // First run there will be this
-            }
-            arenaPanel.remove(mainMenuLogoLabel);
-
-            try {
-                final String logoPath = "src\\main\\gui\\resources\\";
+                final String logoPath = "src/main/gui/resources/";
                 BufferedImage mainMenuLogo;
                 mainMenuLogo = ImageIO.read(new File(logoPath + "very_very_low_effort_tank.png"));
                 mainMenuLogo = rotateTankImage(mainMenuLogo, currentTank);
