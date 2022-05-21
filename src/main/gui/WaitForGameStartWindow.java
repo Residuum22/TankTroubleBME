@@ -58,8 +58,6 @@ public class WaitForGameStartWindow {
     }
 
     public void updateJoinedPlayerList(ArrayList<Player> list) {
-        //todo - done - network controller
-
         int lengthOfPlayerArrayList = list.size();
         playerListPanel.removeAll();
         playerListPanel.setLayout(new GridLayout(lengthOfPlayerArrayList, 1));
@@ -68,6 +66,8 @@ public class WaitForGameStartWindow {
             playerElement.setBackground(Color.BLUE);
             playerListPanel.add(playerElement);
         }
-        playerListPanel.updateUI();
+        // playerListPanel.updateUI();
+        System.out.println("Len:" + lengthOfPlayerArrayList);
+        waitForGameStartWindowFrame.validate();
     }
 }

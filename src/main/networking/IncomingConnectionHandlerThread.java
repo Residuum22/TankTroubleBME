@@ -5,7 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class IncomingConnectionHandlerThread extends Thread {
-    private ServerSocket serverSocket;
+    ServerSocket serverSocket = null;
     private boolean isRunning;
 
     public IncomingConnectionHandlerThread() {
@@ -19,32 +19,34 @@ public class IncomingConnectionHandlerThread extends Thread {
 
         try {
             this.serverSocket = new ServerSocket(NetworkController.Port);
-            while (this.isRunning) {
-                try {
-                    assert this.serverSocket != null;
-                    socket = this.serverSocket.accept();
-                } catch (IOException e) {
-                    if(this.isRunning) {
-                        e.printStackTrace();
-                    }
-                }
-
-                if(socket != null) {
-                    new ServerThread(socket).start();
-                }
-                System.out.println("Got new connection");
-            }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        while (this.isRunning) {
+            try {
+                socket = this.serverSocket.accept();
+            } catch (IOException e) {
+                if(this.isRunning) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(socket != null) {
+                new RoomConnectionHelper(socket);
+            }
+            System.out.println("Got new connection");
         }
     }
 
     public void stopListening() {
         this.isRunning = false;
-        try {
-            this.serverSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(this.serverSocket != null) {
+            try {
+                this.serverSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

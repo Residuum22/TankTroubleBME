@@ -7,21 +7,26 @@ import main.model.Player;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
-import java.io.*;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
-public class ClientReceiveThread extends Thread{
+public class ServerReceiveThread extends Thread {
     private final ObjectInputStream objectInputStream;
+    private final ClientConnection connection;
     private boolean isRunning;
 
-    public ClientReceiveThread(ObjectInputStream objectInputStream) {
+    public ServerReceiveThread(ObjectInputStream objectInputStream, ClientConnection connection) {
         this.objectInputStream = objectInputStream;
+        this.connection = connection;
         this.isRunning = true;
-        this.start();
     }
 
+    // keyPressFromClient
     @Override
     public void run() {
         try {
@@ -30,25 +35,8 @@ public class ClientReceiveThread extends Thread{
                     Message msg = (Message) this.objectInputStream.readObject();
 
                     switch (msg.type) {
-                        case lobbyUpdate -> {
-                            if(TankTrouble.waitForGameStartWindow != null) {
-                                ArrayList<Player> players = (ArrayList<Player>) msg.data;
-                                TankTrouble.waitForGameStartWindow.updateJoinedPlayerList(players);
-                            }
-                        }
-                        case serverClosing -> {
-                            JOptionPane.showMessageDialog(null, "Server stopped");
-                            TankTrouble.waitForGameStartWindow.leaveRoom();
-                        }
-                        case serverStartingBattlefieldBuild -> {
-                            TankTrouble.waitForGameStartWindow.remoteGameStarted();
-                            TankTrouble.gameWindow = new GameWindow();
-                            TankTrouble.gameWindow.setBattleField((Battlefield) msg.data);
-                            TankTrouble.gameWindow.drawBattlefield();
-                        }
-                        case keyPressBroadcast -> {
-                            KeyEvent key = (KeyEvent) msg.data;
-                            // todo handle key press
+                        case keyPressFromClient -> {
+                            TankTrouble.mainGame.networkController.broadcastKeyPress((KeyEvent) msg.data, this.connection);
                         }
                     }
                 } catch (SocketException | EOFException e) {
@@ -72,7 +60,7 @@ public class ClientReceiveThread extends Thread{
         }
     }
 
-    public void stopReceive() {
+    public void stopServer() {
         this.isRunning = false;
     }
 }

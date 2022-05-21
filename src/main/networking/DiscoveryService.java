@@ -59,6 +59,12 @@ public class DiscoveryService extends Thread {
                 if (this.logEnabled) {
                     System.out.println("Discovery cycle done.");
                 }
+
+                try {
+                    Thread.sleep(this.discoveryRoundDelay);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
             if(this.externalDiscoveryActive) {
@@ -88,12 +94,6 @@ public class DiscoveryService extends Thread {
                 } catch (IOException e) {
                     System.out.println("Server stopped or I/O error: " + e);
                 }
-            }
-
-            try {
-                Thread.sleep(this.discoveryRoundDelay);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
     }
@@ -175,12 +175,10 @@ public class DiscoveryService extends Thread {
             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
             room = (Room) objectInputStream.readObject();
             room.ip = (Inet4Address) Inet4Address.getByName(host);
-        } catch (ConnectException | SocketTimeoutException e) {
+        } catch (ClassNotFoundException | IOException e) {
             if(this.logEnabled) {
                 System.out.println("Connection refused or timed out on " + host);
             }
-        } catch (ClassNotFoundException | IOException e) {
-            e.printStackTrace();
         }
 
         return room;

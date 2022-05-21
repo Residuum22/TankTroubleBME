@@ -4,6 +4,7 @@ import main.TankTrouble;
 import main.model.Player;
 import main.model.Room;
 
+import java.awt.event.KeyEvent;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -17,13 +18,12 @@ public class NetworkController extends Thread {
     private final DiscoveryService discoveryService = new DiscoveryService();
     private IncomingConnectionHandlerThread incomingConnectionHandlerThread = null;
     private ClientReceiveThread clientReceiveThread = null;
-
-    public ArrayList<ServerThread> activeConnections = new ArrayList<>();
+    private ClientTransmitThread clientTransmitThread = null;
+    public ArrayList<ClientConnection> activeClientConnections = new ArrayList<>();
 
     public NetworkController() {
 
     }
-
 
     public void startDiscovery() {
         this.discoveryService.startDiscovery();
@@ -45,9 +45,10 @@ public class NetworkController extends Thread {
 
     public void closeRoom() {
         this.incomingConnectionHandlerThread.stopListening();
-        for(ServerThread t : this.activeConnections) {
+        for(ClientConnection t : this.activeClientConnections) {
             t.stopServer();
         }
+        this.activeClientConnections.clear();
     }
 
     public boolean joinRoom(Room room) {
@@ -63,10 +64,18 @@ public class NetworkController extends Thread {
             this.clientObjectInputStream = new ObjectInputStream(inputStream);
 
             Message msg = new Message(Message.MessageType.joinRequest, TankTrouble.mainGame.getThisPlayer());
-            Message result = this.sendMessageGetResponse(msg);
+            Message result = null;
+            try {
+                this.clientObjectOutputStream.writeObject(msg);
+                result = (Message) this.clientObjectInputStream.readObject();
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
 
             if(result != null && result.type == Message.MessageType.joinAccepted) {
-                this.clientReceiveThread = new ClientReceiveThread(this.clientObjectInputStream, this.clientObjectOutputStream);
+                this.clientReceiveThread = new ClientReceiveThread(this.clientObjectInputStream);
+                this.clientTransmitThread = new ClientTransmitThread(this.clientObjectOutputStream);
+                TankTrouble.mainGame.networkController.stopDiscovery();
                 return true;
             }
         } catch (IOException e) {
@@ -76,17 +85,7 @@ public class NetworkController extends Thread {
         return false;
     }
 
-    private Message sendMessageGetResponse(Message msg) {
-        try {
-            this.clientObjectOutputStream.writeObject(msg);
-            return  (Message) this.clientObjectInputStream.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static Message handleExternalJoinRequest(Object data, InetAddress address) {
+    public static boolean handleExternalJoinRequest(Object data, InetAddress address) {
         System.out.println("Received new connection request");
 
         Room ownRoom = TankTrouble.mainGame.getOwnRoom();
@@ -95,10 +94,10 @@ public class NetworkController extends Thread {
         if(ownRoom.joinedPlayers.size() < ownRoom.slots) {
             player.ip = (Inet4Address) address;
             ownRoom.joinedPlayers.add(player);
-            return new Message(Message.MessageType.joinAccepted, null);
+            return true;
         }
 
-        return new Message(Message.MessageType.joinDeclined, null);
+        return false;
     }
 
     public void leaveLobby() {
@@ -113,8 +112,8 @@ public class NetworkController extends Thread {
     }
 
     public void broadcastGameStarting() {
-        for(ServerThread t : this.activeConnections) {
-            t.startGame();
+        for(ClientConnection t : this.activeClientConnections) {
+            t.transmitThread.startGame();
         }
     }
 
@@ -124,6 +123,7 @@ public class NetworkController extends Thread {
     }
 
     private void stopClientFunctions() {
+        this.clientReceiveThread.stopReceive();
         if(this.clientReceiveThread != null) {
             this.clientReceiveThread.interrupt();
         }
@@ -141,6 +141,19 @@ public class NetworkController extends Thread {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void broadcastKeyPress(KeyEvent key, ClientConnection source) {
+        for(ClientConnection c : this.activeClientConnections) {
+            if(c != source) {
+                c.transmitThread.sendKeyPress(key);
+            }
+        }
+    }
+
+    public void sendKeyPress(KeyEvent key) {
+        Message msg = new Message(Message.MessageType.keyPressFromClient, key);
+        this.clientTransmitThread.sendMessage(msg);
     }
 }
 

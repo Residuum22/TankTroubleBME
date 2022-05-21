@@ -3,51 +3,34 @@ package main.networking;
 import main.TankTrouble;
 import main.model.Player;
 
+import java.awt.event.KeyEvent;
 import java.io.*;
-import java.net.Socket;
 import java.util.ArrayList;
 
-public class ServerThread extends Thread {
-    private Socket socket;
-    private ObjectInputStream objectInputStream;
+public class ServerTransmitThread extends Thread {
     private ObjectOutputStream objectOutputStream;
+    private ClientConnection connection;
     private boolean isRunning;
 
     private enum ServerState {
         stopping,
         waitingForPlayersToJoin,
-        gameInProgress, startingBattle
+        startingBattle,
+        gameInProgress
     }
     private ServerState serverState;
-    private Player remotePlayer = null;
+    private Player player = null;
 
-    public ServerThread(Socket socket) {
-        this.socket = socket;
+    public ServerTransmitThread(ObjectOutputStream objectOutputStream, ClientConnection connection, Player player) {
+        this.objectOutputStream = objectOutputStream;
+        this.connection = connection;
+        this.player = player;
         this.isRunning = true;
     }
 
     @Override
     public void run() {
-        Message result = null;
-
         try {
-            InputStream inputStream = socket.getInputStream();
-            this.objectInputStream = new ObjectInputStream(inputStream);
-            OutputStream outputStream = socket.getOutputStream();
-            this.objectOutputStream = new ObjectOutputStream(outputStream);
-
-            Message msg = (Message) objectInputStream.readObject();
-            if(msg.type == Message.MessageType.joinRequest) {
-                result = NetworkController.handleExternalJoinRequest(msg.data, socket.getInetAddress());
-                objectOutputStream.writeObject(result);
-                this.remotePlayer = (Player) msg.data;
-                if(result.type != Message.MessageType.joinAccepted) {
-                    this.isRunning = false;
-                    socket.close();
-                }
-            }
-
-            TankTrouble.mainGame.networkController.activeConnections.add(this);
             serverState = ServerState.waitingForPlayersToJoin;
             while (this.isRunning) {
                 switch (serverState) {
@@ -57,7 +40,6 @@ public class ServerThread extends Thread {
                     }
                     case stopping -> {
                         this.sendClosingMessage();
-                        TankTrouble.mainGame.networkController.activeConnections.remove(this);
                         this.isRunning = false;
                     }
                     case startingBattle -> {
@@ -78,18 +60,14 @@ public class ServerThread extends Thread {
                 }
             }
 
-            socket.close();
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Client connection closed");
-            ArrayList<Player> players = TankTrouble.mainGame.getOwnRoom().joinedPlayers;
-            for(int i = 0; i < players.size(); i++) {
-                if(players.get(i).ip == this.remotePlayer.ip) {
-                    TankTrouble.mainGame.getOwnRoom().joinedPlayers.remove(i);
-                    break;
-                }
+            if(this.objectOutputStream != null) {
+                this.objectOutputStream.close();
             }
-            TankTrouble.waitForGameStartWindow.updateJoinedPlayerList(TankTrouble.mainGame.getOwnRoom().joinedPlayers);
+        } catch (IOException e) {
+            System.out.println("Client connection closed");
+            this.connection.closeConnection();
         }
+
     }
 
     private void sendClosingMessage() throws IOException {
@@ -114,5 +92,9 @@ public class ServerThread extends Thread {
 
     public void startGame() {
         this.serverState = ServerState.startingBattle;
+    }
+
+    public void sendKeyPress(KeyEvent key) {
+        Message message = new Message(Message.MessageType.keyPressBroadcast, key);
     }
 }

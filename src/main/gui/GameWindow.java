@@ -33,7 +33,6 @@ public class GameWindow {
             int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?",
                     ":(", JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION){
-                //Todo network controller action (put here)
                 TankTrouble.mainGame.networkController.leaveGame();
                 gameWindowFrame.dispose();
                 TankTrouble.waitForGameStartWindow.setWaitForGameStartWindowFrameVisible();

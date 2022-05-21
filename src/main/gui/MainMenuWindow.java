@@ -62,7 +62,8 @@ public class MainMenuWindow {
         int imageWidth = 128;
         int imageHeight = 128;
         try {
-            final String logoPath = "src\\main\\gui\\resources\\";
+            // TODO merge
+            final String logoPath = "src/main/gui/resources/";
             BufferedImage mainMenuLogo;
             mainMenuLogo = ImageIO.read(new File(logoPath + "logo.png"));
             JLabel mainMenuLogoLabel = new JLabel(new ImageIcon(mainMenuLogo));
