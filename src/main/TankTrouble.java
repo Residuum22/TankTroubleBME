@@ -2,8 +2,8 @@ package main;
 
 import main.gui.GameWindow;
 import main.gui.MainMenuWindow;
-import main.gui.WaitForGameStartWindow;
-import main.model.*;
+import main.networking.DiscoveryService;
+import main.networking.NetworkController;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -12,12 +12,15 @@ public class TankTrouble {
     public static TankTrouble mainGame = new TankTrouble();
     public static MainMenuWindow mainMenuWindow = new MainMenuWindow();
     public static WaitForGameStartWindow waitForGameStartWindow;
+    public static GameWindow gameWindow;
 
     private Room ownRoom = null;
     private final ArrayList<Room> listOfRemoteRooms = new ArrayList<>();
     private Player thisPlayer = new Player();
 
     public static Battlefield myBattlefield = GameWindow.getBattlefield();
+
+    public NetworkController networkController = new NetworkController();
 
     /**
      * LOL this will be our game.
@@ -63,6 +66,10 @@ public class TankTrouble {
      */
     public Room getOwnRoom() {
         return ownRoom;
+    }
+
+    public boolean hasOwnRoom() {
+        return ownRoom != null;
     }
 
     /**

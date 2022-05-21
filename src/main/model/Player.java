@@ -1,8 +1,9 @@
 package main.model;
 
+import java.io.Serializable;
 import java.net.Inet4Address;
 
-public class Player {
+public class Player implements Serializable {
     public String name;
     public Inet4Address ip;
 

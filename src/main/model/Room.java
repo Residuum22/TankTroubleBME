@@ -1,10 +1,12 @@
 package main.model;
 
+import java.io.Serializable;
 import java.net.Inet4Address;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Room {
-    enum RoomType {
+public class Room implements Serializable {
+    public enum RoomType {
         Host,
         Guest
     }
@@ -12,7 +14,7 @@ public class Room {
     public RoomType type;
     public String name;
     public Player owner;
-    public List<Player> joinedPlayers;
+    public ArrayList<Player> joinedPlayers;
     public int slots;
     public Inet4Address ip;
 
@@ -21,7 +23,7 @@ public class Room {
         this.name = owner.name + "'s room";
     }
 
-    public Room(RoomType type, String name, Player owner, List<Player> joinedPlayers, int slots, Inet4Address ip) {
+    public Room(RoomType type, String name, Player owner, ArrayList<Player> joinedPlayers, int slots, Inet4Address ip) {
         this.type = type;
         this.name = name;
         this.owner = owner;
