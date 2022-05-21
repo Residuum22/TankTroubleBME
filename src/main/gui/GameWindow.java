@@ -21,10 +21,10 @@ public class GameWindow {
     private JPanel contentPanel;
     private JPanel arenaPanel;
     private JButton leaveButton;
-    Battlefield thisGameBattleField = new Battlefield();
+    private Battlefield thisGameBattleField = new Battlefield();
 
     public GameWindow() {
-        JFrame gameWindowFrame = new JFrame("Tank Trouble Game");
+        JFrame gameWindowFrame = new JFrame("Tank Trouble Game - " + TankTrouble.mainGame.getThisPlayerName());
         gameWindowFrame.setSize(60 * scale, 30 * scale);
         gameWindowFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         gameWindowFrame.add(contentPanel);
@@ -33,7 +33,7 @@ public class GameWindow {
             int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?",
                     ":(", JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION){
-                //Todo network controller action (put here)
+                TankTrouble.mainGame.networkController.leaveGame();
                 gameWindowFrame.dispose();
                 TankTrouble.waitForGameStartWindow.setWaitForGameStartWindowFrameVisible();
             }
@@ -42,9 +42,19 @@ public class GameWindow {
         gameWindowFrame.setVisible(true);
     }
 
+    public void generateBattleField() {
+        thisGameBattleField.generateBattleFieldPositioningXZCoordinate();
+    }
+
+    public Battlefield getBattleField() {
+        return thisGameBattleField;
+    }
+
+    public void setBattleField(Battlefield newBattlefield) {
+        this.thisGameBattleField = newBattlefield;
+    }
 
     public void drawBattlefield() {
-        thisGameBattleField.generateBattleFieldPositioningXZCoordinate();
         Field[][] fields = thisGameBattleField.getFields();
 
         int mazeDimensionX = thisGameBattleField.getMazeDimensionX();

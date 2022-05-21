@@ -1,10 +1,11 @@
 package main.model;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Random;
 
 
-public class Battlefield {
+public class Battlefield implements Serializable {
     /**
      * Attention! Attention!
      * TODO we must review this issue in the test phase.

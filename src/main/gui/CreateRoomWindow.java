@@ -1,11 +1,14 @@
 package main.gui;
 
 import main.TankTrouble;
+import main.model.Player;
+import main.model.Room;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CreateRoomWindow {
-    private int maxSlotInt;
 
     /**
      * This function creates a JOptionPane where the user can give the room name (todo)
@@ -19,6 +22,7 @@ public class CreateRoomWindow {
         JLabel errorMessage = new JLabel();
         do {
             roomName.setEnabled(false);
+            roomName.setText(TankTrouble.mainGame.getThisPlayerName() + "'s room");
             Object[] inputs = new Object[]{errorMessage, "Room name", roomName, "Max slots", maxSlot};
             int option = JOptionPane.showConfirmDialog(
                     null, inputs, "Create new lobby", JOptionPane.OK_CANCEL_OPTION);
@@ -27,8 +31,7 @@ public class CreateRoomWindow {
                 break;
             }
             try {
-                setMaxSlot(Integer.parseInt(maxSlot.getText()));
-                createRoom(roomName.getText());
+                createRoom(roomName.getText(), Integer.parseInt(maxSlot.getText()));
                 break;
             } catch (NumberFormatException nfe) {
                 errorMessage.setText("Max slot field must contains integer number only!");
@@ -37,17 +40,27 @@ public class CreateRoomWindow {
     }
 
     public void backToMainMenuWindow() {
+        TankTrouble.mainGame.networkController.startDiscovery();
+        TankTrouble.mainGame.networkController.stopExternalDiscoveryService();
         TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();
     }
 
-    public void setMaxSlot(int slot) {
-        maxSlotInt = slot;
-    }
-
-    public void createRoom(String roomName) {
-        //Todo wait for network controller
-        //Todo make waitforgametostartwindowhere
+    public void createRoom(String roomName, int slots) {
+        //Todo - done - wait for network controller
+        Room room = new Room(
+                Room.RoomType.Host,
+                roomName,
+                TankTrouble.mainGame.getThisPlayer(),
+                new ArrayList<>(),
+                slots,
+                null);
+        room.joinedPlayers.add(TankTrouble.mainGame.getThisPlayer());
+        TankTrouble.mainGame.addNewOwnRoom(room);
+        TankTrouble.mainGame.networkController.stopDiscovery();
+        TankTrouble.mainGame.networkController.startExternalDiscoveryService();
         TankTrouble.waitForGameStartWindow = new WaitForGameStartWindow();
+        TankTrouble.waitForGameStartWindow.updateJoinedPlayerList(TankTrouble.mainGame.getOwnRoom().joinedPlayers);
+
     }
 
 }

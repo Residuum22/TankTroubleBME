@@ -2,7 +2,6 @@ package main.gui;
 
 import main.TankTrouble;
 import main.model.Player;
-import main.model.Room;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,12 +14,14 @@ public class WaitForGameStartWindow {
     private JButton startGameButton;
     private JPanel playerListPanel;
 
-    ArrayList<Player> joinedPlayerList = new ArrayList<>();
-
     public WaitForGameStartWindow() {
         waitForGameStartWindowFrame = new JFrame("Lobby");
         waitForGameStartWindowFrame.setSize(1024, 720);
-        waitForGameStartWindowFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        waitForGameStartWindowFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+
+        if(!TankTrouble.mainGame.hasOwnRoom()) {
+            startGameButton.setVisible(false);
+        }
 
         leaveButton.addActionListener(e -> {
             leaveRoom();
@@ -37,30 +38,36 @@ public class WaitForGameStartWindow {
     public void setWaitForGameStartWindowFrameVisible() {waitForGameStartWindowFrame.setVisible(true);}
 
     public void leaveRoom() {
-        //Todo network controller
         waitForGameStartWindowFrame.dispose();
+        TankTrouble.mainGame.networkController.leaveLobby();
         TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();
     }
 
     public void startGame() {
         // Here i hide the window only so when the game is over set visible again.
         waitForGameStartWindowFrame.setVisible(false);
-        GameWindow gameWindow = new GameWindow();
-        gameWindow.drawBattlefield();
-        //Todo network controller
+        TankTrouble.gameWindow = new GameWindow();
+        TankTrouble.gameWindow.generateBattleField();
+        TankTrouble.gameWindow.drawBattlefield();
+        //Todo - done - network controller
+        TankTrouble.mainGame.networkController.broadcastGameStarting();
     }
 
-    public void updateJoinedPlayerList(ArrayList<Player> updatedList) {
-        //todo network controller
-        joinedPlayerList.removeAll(joinedPlayerList);
-        joinedPlayerList.addAll(updatedList);
+    public void remoteGameStarted() {
+        waitForGameStartWindowFrame.setVisible(false);
+    }
 
-        int lengthOfPlayerArrayList = joinedPlayerList.size();
+    public void updateJoinedPlayerList(ArrayList<Player> list) {
+        int lengthOfPlayerArrayList = list.size();
+        playerListPanel.removeAll();
         playerListPanel.setLayout(new GridLayout(lengthOfPlayerArrayList, 1));
-        for (Player currentPlayer : joinedPlayerList) {
+        for (Player currentPlayer : list) {
             JLabel playerElement = new JLabel(currentPlayer.name);
-            playerElement.setBackground(Color.white);
+            playerElement.setBackground(Color.BLUE);
             playerListPanel.add(playerElement);
         }
+        // playerListPanel.updateUI();
+        System.out.println("Len:" + lengthOfPlayerArrayList);
+        waitForGameStartWindowFrame.validate();
     }
 }
