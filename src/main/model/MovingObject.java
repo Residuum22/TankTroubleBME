@@ -10,4 +10,5 @@ public class MovingObject {
 
     public Field position;
     public Direction direction;
+    public boolean destroyed;
 }

@@ -43,7 +43,7 @@ public class GameWindow {
         leaveButton.addActionListener(e -> {
             int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?",
                     ":(", JOptionPane.OK_CANCEL_OPTION);
-            if (option == JOptionPane.OK_OPTION){
+            if (option == JOptionPane.OK_OPTION) {
                 TankTrouble.mainGame.networkController.leaveGame();
                 gameWindowFrame.dispose();
                 TankTrouble.waitForGameStartWindow.setWaitForGameStartWindowFrameVisible();
@@ -61,10 +61,10 @@ public class GameWindow {
             }
 
             public void keyReleased(KeyEvent e) {
-                // pressedKey(e);
+                TankTrouble.mainGame.networkController.sendKeyPress(e);
                 int keyCode = e.getKeyCode();
                 for (int i = 0; i < thisGameBattleField.listOfTanks.size(); i++) {
-                    if (thisGameBattleField.listOfTanks.get(i).owner.name.equals(TankTrouble.mainGame.getThisPlayerName())) {
+                    if (thisGameBattleField.listOfTanks.get(i).owner.equals(TankTrouble.mainGame.getThisPlayer())) {
                         switch (keyCode) {
                             case KeyEvent.VK_RIGHT, KeyEvent.VK_LEFT, KeyEvent.VK_UP, KeyEvent.VK_DOWN -> {
                                 thisGameBattleField.listOfTanks.get(i).moveTankToNextPosition(keyCode);
@@ -84,16 +84,14 @@ public class GameWindow {
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 if (thisGameBattleField.listOfMissiles.size() != 0) {
-                    if (thisGameBattleField.listOfMissiles.size() == 1) {
-                        thisGameBattleField.listOfMissiles.get(0).updateMissilePosition();
+                    for (Missile currentMissile :
+                            TankTrouble.myBattlefield.listOfMissiles) {
+                        currentMissile.updateMissilePosition();
                     }
-                    else {
-                        for (int i = 0; i < thisGameBattleField.listOfMissiles.size(); i++) {
-                            thisGameBattleField.listOfMissiles.get(i).updateMissilePosition();
-                        }
-                    }
-                    updateMissile();
-                    updateTank();
+                    updateScreen();
+                    removeMissileFromList();
+                    removeTankFromList();
+
                     if (thisGameBattleField.listOfTanks.size() == 1) {
                         //todo message box to winner
                     }
@@ -101,11 +99,6 @@ public class GameWindow {
             }
         }, 100, 150);
     }
-
-    // public void pressedKey(KeyEvent key) {
-    //     NetworkController.sendKeyPress(e);
-    // }
-
     public void generateBattleField() {
         thisGameBattleField.generateBattleFieldPositioningXYCoordinate();
     }
@@ -172,25 +165,28 @@ public class GameWindow {
 
             Field currentTankField = currentTank.getTankPosition();
             JPanel tmpJPanel = jPanels[currentTankField.getX()][currentTankField.getY()];
+            if (!currentTank.destroyed) {
+                if (currentTank.owner == TankTrouble.mainGame.getThisPlayer())
+                    tmpJPanel.setBackground(Color.red);
+                else
+                    tmpJPanel.setBackground(Color.blue);
 
-            if (currentTank.owner == TankTrouble.mainGame.getThisPlayer())
-                tmpJPanel.setBackground(Color.red);
-            else
-                tmpJPanel.setBackground(Color.blue);
+                tmpJPanel.setMaximumSize(new Dimension(16, 16));
+                tmpJPanel.setMinimumSize(new Dimension(16, 16));
+                tmpJPanel.setPreferredSize(new Dimension(16, 16));
 
-            tmpJPanel.setMaximumSize(new Dimension(16, 16));
-            tmpJPanel.setMinimumSize(new Dimension(16, 16));
-            tmpJPanel.setPreferredSize(new Dimension(16, 16));
-
-            try {
-                final String logoPath = "src/main/gui/resources/";
-                BufferedImage mainMenuLogo;
-                mainMenuLogo = ImageIO.read(new File(logoPath + "very_very_low_effort_tank.png"));
-                mainMenuLogo = rotateTankImage(mainMenuLogo, currentTank);
-                mainMenuLogoLabel.setIcon(new ImageIcon(mainMenuLogo.getScaledInstance(24, 24, Image.SCALE_DEFAULT)));
-                tmpJPanel.add(mainMenuLogoLabel);
-            } catch (IOException ioe) {
-                // Should never happen during regular use
+                try {
+                    final String logoPath = "src/main/gui/resources/";
+                    BufferedImage mainMenuLogo;
+                    mainMenuLogo = ImageIO.read(new File(logoPath + "very_very_low_effort_tank.png"));
+                    mainMenuLogo = rotateTankImage(mainMenuLogo, currentTank);
+                    mainMenuLogoLabel.setIcon(new ImageIcon(mainMenuLogo.getScaledInstance(24, 24, Image.SCALE_DEFAULT)));
+                    tmpJPanel.add(mainMenuLogoLabel);
+                } catch (IOException ioe) {
+                    // Should never happen during regular use
+                }
+            } else {
+                tmpJPanel.removeAll();
             }
         }
         arenaPanel.revalidate();
@@ -201,13 +197,6 @@ public class GameWindow {
         for (Missile currentMissile :
                 TankTrouble.myBattlefield.listOfMissiles) {
 
-            Field currentMissileField = currentMissile.getMissilePosition();
-            JPanel tmpJPanel = jPanels[currentMissileField.getX()][currentMissileField.getY()];
-
-            tmpJPanel.setMaximumSize(new Dimension(16, 16));
-            tmpJPanel.setMinimumSize(new Dimension(16, 16));
-            tmpJPanel.setPreferredSize(new Dimension(16, 16));
-
             JLabel mainMenuLogoLabel = currentMissile.getThisMissileJLabel();
             try {
                 mainMenuLogoLabel.getParent().setBackground(Color.white);
@@ -216,8 +205,15 @@ public class GameWindow {
             }
             arenaPanel.remove(mainMenuLogoLabel);
 
+            Field currentMissileField = currentMissile.getMissilePosition();
+            JPanel tmpJPanel = jPanels[currentMissileField.getX()][currentMissileField.getY()];
+
+            tmpJPanel.setMaximumSize(new Dimension(16, 16));
+            tmpJPanel.setMinimumSize(new Dimension(16, 16));
+            tmpJPanel.setPreferredSize(new Dimension(16, 16));
+
             try {
-                final String logoPath = "src\\main\\gui\\resources\\";
+                final String logoPath = "src/main/gui/resources/";
                 BufferedImage mainMenuLogo;
                 mainMenuLogo = ImageIO.read(new File(logoPath + "very_very_low_effort_missile.png"));
                 mainMenuLogoLabel.setIcon(new ImageIcon(mainMenuLogo.getScaledInstance(16, 16, Image.SCALE_DEFAULT)));
@@ -225,9 +221,50 @@ public class GameWindow {
             } catch (IOException ioe) {
                 // Should never happen during regular use
             }
+            if (currentMissile.destroyed){
+                tmpJPanel.removeAll();
+            }
         }
         arenaPanel.revalidate();
         arenaPanel.repaint();
+    }
+
+    public void removeMissileFromList() {
+        int destroyedMissileIndex = 999;
+        if (thisGameBattleField.listOfMissiles.size() == 1) {
+            if (thisGameBattleField.listOfMissiles.get(0).destroyed) {
+                thisGameBattleField.listOfMissiles.remove(0);
+            }
+        }
+        else {
+            for (int i = 0; i < thisGameBattleField.listOfMissiles.size(); i++) {
+                if (thisGameBattleField.listOfMissiles.get(i).destroyed) {
+                    destroyedMissileIndex = i;
+                }
+            }
+            if (destroyedMissileIndex < 999) {
+                thisGameBattleField.listOfMissiles.remove(destroyedMissileIndex);
+            }
+        }
+    }
+
+    public void removeTankFromList() {
+        int destroyedTankIndex = 999;
+        if (thisGameBattleField.listOfMissiles.size() == 1) {
+            if (thisGameBattleField.listOfMissiles.get(0).destroyed) {
+                thisGameBattleField.listOfMissiles.remove(0);
+            }
+        }
+        else {
+            for (int i = 0; i < thisGameBattleField.listOfTanks.size(); i++) {
+                if (thisGameBattleField.listOfTanks.get(i).destroyed) {
+                    destroyedTankIndex = i;
+                }
+            }
+            if (destroyedTankIndex < 999) {
+                thisGameBattleField.listOfTanks.remove(destroyedTankIndex);
+            }
+        }
     }
 
     public static void setBattlefieldMissile(Missile newMissile) {

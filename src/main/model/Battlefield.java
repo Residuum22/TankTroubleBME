@@ -1,5 +1,7 @@
 package main.model;
 
+import main.TankTrouble;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,8 +80,22 @@ public class Battlefield implements Serializable {
         return mazeDimensionY;
     }
 
+    // szerver csinálja
+    public void generateTanks() {
+        // TankTrouble.mainGame.getOwnRoom().joinedPlayers;
+
+        // for ciklus
+
+        TankTrouble.networkController.sendTankList();
+    }
+
     public ArrayList<Tank> getListOfTanks() {
         return listOfTanks;
+    }
+
+    // kliensben
+    public void setListOfTanks(ArrayList<Tank> tanks) {
+        this.listOfTanks = tanks;
     }
 
     public ArrayList<Missile> getListOfMissiles() {

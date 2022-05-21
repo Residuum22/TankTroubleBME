@@ -155,5 +155,9 @@ public class NetworkController extends Thread {
         Message msg = new Message(Message.MessageType.keyPressFromClient, key);
         this.clientTransmitThread.sendMessage(msg);
     }
+
+    public void sendTankList() {
+        
+    }
 }
 

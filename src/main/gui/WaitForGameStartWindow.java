@@ -51,6 +51,8 @@ public class WaitForGameStartWindow {
         TankTrouble.gameWindow.drawBattlefield();
         //Todo - done - network controller
         TankTrouble.mainGame.networkController.broadcastGameStarting();
+        TankTrouble.gameWindow.getBattleField().generateTanks();
+        TankTrouble.gameWindow.drawBattlefield();
     }
 
     public void remoteGameStarted() {

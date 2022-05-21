@@ -7,7 +7,6 @@ import java.awt.event.KeyEvent;
 import java.util.Random;
 
 public class Tank extends MovingObject {
-    public boolean destroyed;
     public Player owner;
 
     private JLabel thisTankJLabel = new JLabel();
@@ -160,9 +159,8 @@ public class Tank extends MovingObject {
         return this.direction;
     }
 
-    public void destroyTank(Missile hitMissile) {
+    public void destroyTank() {
         this.destroyed = true;
-        hitMissile = null;
         //todo question "Leave or stay?"
     }
 
