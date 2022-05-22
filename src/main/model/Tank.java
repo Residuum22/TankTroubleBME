@@ -9,8 +9,6 @@ import java.awt.event.KeyEvent;
 import java.util.Random;
 
 public class Tank extends MovingObject {
-    public Player owner;
-
     private JLabel thisTankJLabel = new JLabel();
 
     public Tank(Player tankOwner) {
@@ -48,30 +46,35 @@ public class Tank extends MovingObject {
 
             thisTankJLabel.getActionMap().put("moveRight", new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
+                    //todo TankTrouble.networkController.sendKeyPress(KeyEvent.VK_RIGHT);
                     moveTankToNextPosition(KeyEvent.VK_RIGHT);
                     TankTrouble.gameWindow.updateTank();
                 }
             });
             thisTankJLabel.getActionMap().put("moveLeft", new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
+                    //todo TankTrouble.networkController.sendKeyPress(KeyEvent.VK_LEFT);
                     moveTankToNextPosition(KeyEvent.VK_LEFT);
                     TankTrouble.gameWindow.updateTank();
                 }
             });
             thisTankJLabel.getActionMap().put("moveUp", new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
+                    //todo TankTrouble.networkController.sendKeyPress(KeyEvent.VK_UP);
                     moveTankToNextPosition(KeyEvent.VK_UP);
                     TankTrouble.gameWindow.updateTank();
                 }
             });
             thisTankJLabel.getActionMap().put("moveDown", new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
+                    //todo TankTrouble.networkController.sendKeyPress(KeyEvent.VK_DOWN);
                     moveTankToNextPosition(KeyEvent.VK_DOWN);
                     TankTrouble.gameWindow.updateTank();
                 }
             });
             thisTankJLabel.getActionMap().put("shootMissile", new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
+                    //todo TankTrouble.networkController.sendKeyPress(KeyEvent.VK_SPACE);
                     shootMissile();
                 }
             });
@@ -83,39 +86,48 @@ public class Tank extends MovingObject {
         Field[][] presentFields = presentBattlefield.getFields();
         int TankXCoordinate = this.position.getX();
         int TankYCoordinate = this.position.getY();
-        Missile missile = new Missile();
-        missile.direction = this.direction;
-        switch (direction) {
-            case Right -> {
-                if (presentFields[TankXCoordinate + 1][TankYCoordinate].getType() == Field.FieldType.Road) {
-                    missile.position = presentFields[TankXCoordinate][TankYCoordinate];
-                    GameWindow.setBattlefieldMissile(missile);
-                } else {
-                    missile = null;
-                }
+        int missileNumber = 0;
+        for (Missile missileObject : presentBattlefield.listOfMissiles) {
+            if (missileObject.owner.equals(TankTrouble.mainGame.getThisPlayer())) {
+                missileNumber++;
             }
-            case Left -> {
-                if (presentFields[TankXCoordinate - 1][TankYCoordinate].getType() == Field.FieldType.Road) {
-                    missile.position = presentFields[TankXCoordinate][TankYCoordinate];
-                    GameWindow.setBattlefieldMissile(missile);
-                } else {
-                    missile = null;
+        }
+        if (missileNumber < 3) {
+            Missile missile = new Missile();
+            missile.direction = this.direction;
+            missile.owner = TankTrouble.mainGame.getThisPlayer();
+            switch (direction) {
+                case Right -> {
+                    if (presentFields[TankXCoordinate + 1][TankYCoordinate].getType() == Field.FieldType.Road) {
+                        missile.position = presentFields[TankXCoordinate][TankYCoordinate];
+                        GameWindow.setBattlefieldMissile(missile);
+                    } else {
+                        missile = null;
+                    }
                 }
-            }
-            case Up -> {
-                if (presentFields[TankXCoordinate][TankYCoordinate - 1].getType() == Field.FieldType.Road) {
-                    missile.position = presentFields[TankXCoordinate][TankYCoordinate];
-                    GameWindow.setBattlefieldMissile(missile);
-                } else {
-                    missile = null;
+                case Left -> {
+                    if (presentFields[TankXCoordinate - 1][TankYCoordinate].getType() == Field.FieldType.Road) {
+                        missile.position = presentFields[TankXCoordinate][TankYCoordinate];
+                        GameWindow.setBattlefieldMissile(missile);
+                    } else {
+                        missile = null;
+                    }
                 }
-            }
-            case Down -> {
-                if (presentFields[TankXCoordinate][TankYCoordinate + 1].getType() == Field.FieldType.Road) {
-                    missile.position = presentFields[TankXCoordinate][TankYCoordinate];
-                    GameWindow.setBattlefieldMissile(missile);
-                } else {
-                    missile = null;
+                case Up -> {
+                    if (presentFields[TankXCoordinate][TankYCoordinate - 1].getType() == Field.FieldType.Road) {
+                        missile.position = presentFields[TankXCoordinate][TankYCoordinate];
+                        GameWindow.setBattlefieldMissile(missile);
+                    } else {
+                        missile = null;
+                    }
+                }
+                case Down -> {
+                    if (presentFields[TankXCoordinate][TankYCoordinate + 1].getType() == Field.FieldType.Road) {
+                        missile.position = presentFields[TankXCoordinate][TankYCoordinate];
+                        GameWindow.setBattlefieldMissile(missile);
+                    } else {
+                        missile = null;
+                    }
                 }
             }
         }

@@ -109,6 +109,9 @@ public class TankTrouble {
         myBattlefield.listOfTanks.add(new Tank(new Player()));
         Tank enemyTank = myBattlefield.getListOfTanks().get(1);
         enemyTank.owner.setName("qwe");
+        myBattlefield.listOfTanks.add(new Tank(new Player()));
+        Tank enemyTank2 = myBattlefield.getListOfTanks().get(2);
+        enemyTank2.owner.setName("qet");
         myBattlefield.addPlayerTankControl();
         gameWindow.updateTank();
     }

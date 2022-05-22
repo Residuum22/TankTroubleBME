@@ -151,7 +151,7 @@ public class NetworkController extends Thread {
         }
     }
 
-    public void sendKeyPress(KeyEvent key) {
+    public void sendKeyPress(int key) {
         Message msg = new Message(Message.MessageType.keyPressFromClient, key);
         this.clientTransmitThread.sendMessage(msg);
     }
