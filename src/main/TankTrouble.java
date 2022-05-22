@@ -102,15 +102,14 @@ public class TankTrouble {
      * @param args Command line arguments. (Should never use)
      */
     public static void main(String[] args) {
- //       GameWindow asd = new GameWindow();
- //       asd.drawBattlefield();
- //       myBattlefield.listOfTanks.add(new Tank());
- //       Tank myTank = myBattlefield.getListOfTanks().get(0);
- //       myTank.owner = TankTrouble.mainGame.getThisPlayer();
- //       myBattlefield.listOfTanks.add(new Tank());
- //       Tank enemyTank = myBattlefield.getListOfTanks().get(1);
- //       enemyTank.owner = new Player();
- //       enemyTank.owner.setName("qwe");
- //       asd.updateTank();
+        gameWindow = new GameWindow();
+        gameWindow.drawBattlefield();
+        myBattlefield.listOfTanks.add(new Tank(TankTrouble.mainGame.getThisPlayer()));
+        Tank myTank = myBattlefield.getListOfTanks().get(0);
+        myBattlefield.listOfTanks.add(new Tank(new Player()));
+        Tank enemyTank = myBattlefield.getListOfTanks().get(1);
+        enemyTank.owner.setName("qwe");
+        myBattlefield.addPlayerTankControl();
+        gameWindow.updateTank();
     }
 }

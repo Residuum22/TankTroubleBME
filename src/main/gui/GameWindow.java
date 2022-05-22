@@ -1,13 +1,14 @@
 package main.gui;
 
 import main.TankTrouble;
-import main.model.*;
+import main.model.Battlefield;
+import main.model.Field;
+import main.model.Missile;
+import main.model.Tank;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +37,10 @@ public class GameWindow {
         gameWindowFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         gameWindowFrame.add(contentPanel);
 
+        InputMap im = (InputMap)UIManager.get("Button.focusInputMap");
+        im.put(KeyStroke.getKeyStroke("pressed SPACE"), "none");
+        im.put(KeyStroke.getKeyStroke("released SPACE"), "none");
+
         leaveButton.addActionListener(e -> {
             int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?",
                     ":(", JOptionPane.OK_CANCEL_OPTION);
@@ -47,31 +52,6 @@ public class GameWindow {
         });
         contentPanel.setVisible(false);
         gameWindowFrame.setVisible(true);
-        gameWindowFrame.addKeyListener(new KeyListener() {
-            public void keyTyped(KeyEvent ke) {
-
-            }
-
-            public void keyPressed(KeyEvent ke) {
-
-            }
-
-            public void keyReleased(KeyEvent ke) {
-                // TankTrouble.networkController.sendKeyPress(e);
-                int keyCode = ke.getKeyCode();
-                for (Tank movingTank: thisGameBattleField.listOfTanks) {
-                    if (movingTank.owner.equals(TankTrouble.mainGame.getThisPlayer())) {
-                        switch (keyCode) {
-                            case KeyEvent.VK_RIGHT, KeyEvent.VK_LEFT, KeyEvent.VK_UP, KeyEvent.VK_DOWN -> {
-                                movingTank.moveTankToNextPosition(keyCode);
-                                updateTank();
-                            }
-                            case KeyEvent.VK_SPACE -> movingTank.shootMissile();
-                        }
-                    }
-                }
-            }
-        });
 
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {

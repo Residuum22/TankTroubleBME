@@ -83,11 +83,17 @@ public class Battlefield implements Serializable {
     // szerver csinálja
     public void generateTanks() {
         for (Player tankOwner: TankTrouble.mainGame.getOwnRoom().joinedPlayers) {
-            Tank newTank = new Tank();
-            newTank.owner = tankOwner;
+            Tank newTank = new Tank(tankOwner);
             this.listOfTanks.add(newTank);
         }
         TankTrouble.networkController.sendTankList();
+        addPlayerTankControl();
+    }
+
+    public void addPlayerTankControl() {
+        for (Tank playersTank : TankTrouble.gameWindow.getBattleField().getListOfTanks()) {
+            playersTank.addControl();
+        }
     }
 
     public ArrayList<Tank> getListOfTanks() {

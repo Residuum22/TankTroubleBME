@@ -8,8 +8,7 @@ public class Missile extends MovingObject {
     JLabel thisMissleJLabel = new JLabel();
 
     public Missile () {
-        this.direction = null;
-        this.position = null;
+
     }
 
     public void updateMissilePosition() {

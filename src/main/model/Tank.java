@@ -1,8 +1,10 @@
 package main.model;
 
+import main.TankTrouble;
 import main.gui.GameWindow;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Random;
 
@@ -11,7 +13,7 @@ public class Tank extends MovingObject {
 
     private JLabel thisTankJLabel = new JLabel();
 
-    public Tank() {
+    public Tank(Player tankOwner) {
         Battlefield presentBattlefield = GameWindow.getBattlefield();
         Field[][] presentFields = presentBattlefield.getFields();
         Random rand = new Random();
@@ -33,8 +35,47 @@ public class Tank extends MovingObject {
             case 3 -> this.direction = Direction.Down;
         }
 
-        this.destroyed = false;
-        this.owner = null;
+        this.owner = tankOwner;
+    }
+
+    public void addControl() {
+        if (owner == TankTrouble.mainGame.getThisPlayer()) {
+            thisTankJLabel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, true), "moveRight");
+            thisTankJLabel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, true), "moveLeft");
+            thisTankJLabel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, true), "moveUp");
+            thisTankJLabel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, true), "moveDown");
+            thisTankJLabel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, true), "shootMissile");
+
+            thisTankJLabel.getActionMap().put("moveRight", new AbstractAction() {
+                public void actionPerformed(ActionEvent e) {
+                    moveTankToNextPosition(KeyEvent.VK_RIGHT);
+                    TankTrouble.gameWindow.updateTank();
+                }
+            });
+            thisTankJLabel.getActionMap().put("moveLeft", new AbstractAction() {
+                public void actionPerformed(ActionEvent e) {
+                    moveTankToNextPosition(KeyEvent.VK_LEFT);
+                    TankTrouble.gameWindow.updateTank();
+                }
+            });
+            thisTankJLabel.getActionMap().put("moveUp", new AbstractAction() {
+                public void actionPerformed(ActionEvent e) {
+                    moveTankToNextPosition(KeyEvent.VK_UP);
+                    TankTrouble.gameWindow.updateTank();
+                }
+            });
+            thisTankJLabel.getActionMap().put("moveDown", new AbstractAction() {
+                public void actionPerformed(ActionEvent e) {
+                    moveTankToNextPosition(KeyEvent.VK_DOWN);
+                    TankTrouble.gameWindow.updateTank();
+                }
+            });
+            thisTankJLabel.getActionMap().put("shootMissile", new AbstractAction() {
+                public void actionPerformed(ActionEvent e) {
+                    shootMissile();
+                }
+            });
+        }
     }
 
     public void shootMissile() {
