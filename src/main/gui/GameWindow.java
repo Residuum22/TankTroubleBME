@@ -1,10 +1,7 @@
 package main.gui;
 
 import main.TankTrouble;
-import main.model.Battlefield;
-import main.model.Field;
-import main.model.Missile;
-import main.model.Tank;
+import main.model.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -25,8 +22,6 @@ public class GameWindow {
      * Make an object e.g: GameWindow game = new GameWindow();
      * Draw battlefield e.g: game.drawBattlefield();
      */
-    private final int scale = 28;
-
     private JPanel contentPanel;
     private JPanel arenaPanel;
     private JButton leaveButton;
@@ -35,6 +30,7 @@ public class GameWindow {
     private JPanel[][] jPanels = new JPanel[thisGameBattleField.getMazeDimensionX()][thisGameBattleField.getMazeDimensionY()];
 
     public GameWindow() {
+        int scale = 28;
         JFrame gameWindowFrame = new JFrame("Tank Trouble Game - " + TankTrouble.mainGame.getThisPlayerName());
         gameWindowFrame.setSize(60 * scale, 30 * scale);
         gameWindowFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -52,28 +48,25 @@ public class GameWindow {
         contentPanel.setVisible(false);
         gameWindowFrame.setVisible(true);
         gameWindowFrame.addKeyListener(new KeyListener() {
-            public void keyTyped(KeyEvent e) {
+            public void keyTyped(KeyEvent ke) {
 
             }
 
-            public void keyPressed(KeyEvent e) {
+            public void keyPressed(KeyEvent ke) {
 
             }
 
-            public void keyReleased(KeyEvent e) {
-                TankTrouble.mainGame.networkController.sendKeyPress(e);
-                int keyCode = e.getKeyCode();
-                for (int i = 0; i < thisGameBattleField.listOfTanks.size(); i++) {
-                    if (thisGameBattleField.listOfTanks.get(i).owner.equals(TankTrouble.mainGame.getThisPlayer())) {
+            public void keyReleased(KeyEvent ke) {
+                // TankTrouble.networkController.sendKeyPress(e);
+                int keyCode = ke.getKeyCode();
+                for (Tank movingTank: thisGameBattleField.listOfTanks) {
+                    if (movingTank.owner.equals(TankTrouble.mainGame.getThisPlayer())) {
                         switch (keyCode) {
                             case KeyEvent.VK_RIGHT, KeyEvent.VK_LEFT, KeyEvent.VK_UP, KeyEvent.VK_DOWN -> {
-                                thisGameBattleField.listOfTanks.get(i).moveTankToNextPosition(keyCode);
+                                movingTank.moveTankToNextPosition(keyCode);
                                 updateTank();
                             }
-                            case KeyEvent.VK_SPACE -> {
-                                thisGameBattleField.listOfTanks.get(i).shootMissile();
-                                updateMissile();
-                            }
+                            case KeyEvent.VK_SPACE -> movingTank.shootMissile();
                         }
                     }
                 }
@@ -91,16 +84,12 @@ public class GameWindow {
                     updateScreen();
                     removeMissileFromList();
                     removeTankFromList();
-
-                    if (thisGameBattleField.listOfTanks.size() == 1) {
-                        //todo message box to winner
-                    }
+                }
+                if (thisGameBattleField.listOfTanks.size() == 1) {
+                    //todo message box to winner
                 }
             }
-        }, 100, 150);
-    }
-    public void generateBattleField() {
-        thisGameBattleField.generateBattleFieldPositioningXYCoordinate();
+        }, 0, 150);
     }
 
     public Battlefield getBattleField() {
@@ -114,6 +103,8 @@ public class GameWindow {
     public void drawBattlefield() {
         thisGameBattleField.generateBattleFieldPositioningXYCoordinate();
         Field[][] fields = thisGameBattleField.getFields();
+        thisGameBattleField.listOfTanks.clear();
+        thisGameBattleField.listOfMissiles.clear();
 
         int mazeDimensionX = thisGameBattleField.getMazeDimensionX();
         int mazeDimensionY = thisGameBattleField.getMazeDimensionY();

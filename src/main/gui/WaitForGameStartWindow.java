@@ -47,12 +47,11 @@ public class WaitForGameStartWindow {
         // Here i hide the window only so when the game is over set visible again.
         waitForGameStartWindowFrame.setVisible(false);
         TankTrouble.gameWindow = new GameWindow();
-        TankTrouble.gameWindow.generateBattleField();
         TankTrouble.gameWindow.drawBattlefield();
         //Todo - done - network controller
         TankTrouble.mainGame.networkController.broadcastGameStarting();
         TankTrouble.gameWindow.getBattleField().generateTanks();
-        TankTrouble.gameWindow.drawBattlefield();
+        TankTrouble.gameWindow.updateTank();
     }
 
     public void remoteGameStarted() {

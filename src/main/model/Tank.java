@@ -47,7 +47,7 @@ public class Tank extends MovingObject {
         switch (direction) {
             case Right -> {
                 if (presentFields[TankXCoordinate + 1][TankYCoordinate].getType() == Field.FieldType.Road) {
-                    missile.position = presentFields[TankXCoordinate + 1][TankYCoordinate];
+                    missile.position = presentFields[TankXCoordinate][TankYCoordinate];
                     GameWindow.setBattlefieldMissile(missile);
                 } else {
                     missile = null;
@@ -55,7 +55,7 @@ public class Tank extends MovingObject {
             }
             case Left -> {
                 if (presentFields[TankXCoordinate - 1][TankYCoordinate].getType() == Field.FieldType.Road) {
-                    missile.position = presentFields[TankXCoordinate - 1][TankYCoordinate];
+                    missile.position = presentFields[TankXCoordinate][TankYCoordinate];
                     GameWindow.setBattlefieldMissile(missile);
                 } else {
                     missile = null;
@@ -63,7 +63,7 @@ public class Tank extends MovingObject {
             }
             case Up -> {
                 if (presentFields[TankXCoordinate][TankYCoordinate - 1].getType() == Field.FieldType.Road) {
-                    missile.position = presentFields[TankXCoordinate][TankYCoordinate - 1];
+                    missile.position = presentFields[TankXCoordinate][TankYCoordinate];
                     GameWindow.setBattlefieldMissile(missile);
                 } else {
                     missile = null;
@@ -71,7 +71,7 @@ public class Tank extends MovingObject {
             }
             case Down -> {
                 if (presentFields[TankXCoordinate][TankYCoordinate + 1].getType() == Field.FieldType.Road) {
-                    missile.position = presentFields[TankXCoordinate][TankYCoordinate + 1];
+                    missile.position = presentFields[TankXCoordinate][TankYCoordinate];
                     GameWindow.setBattlefieldMissile(missile);
                 } else {
                     missile = null;

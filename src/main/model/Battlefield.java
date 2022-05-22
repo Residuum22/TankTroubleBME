@@ -82,10 +82,11 @@ public class Battlefield implements Serializable {
 
     // szerver csinálja
     public void generateTanks() {
-        // TankTrouble.mainGame.getOwnRoom().joinedPlayers;
-
-        // for ciklus
-
+        for (Player tankOwner: TankTrouble.mainGame.getOwnRoom().joinedPlayers) {
+            Tank newTank = new Tank();
+            newTank.owner = tankOwner;
+            this.listOfTanks.add(newTank);
+        }
         TankTrouble.networkController.sendTankList();
     }
 
