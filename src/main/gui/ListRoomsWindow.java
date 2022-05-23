@@ -54,13 +54,6 @@ public class ListRoomsWindow {
      *  joinToLobbyButton: Call joins to chosen room button
      */
     private void addActionListeners() {
-        listRoomsWindowFrame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                super.windowClosing(e);
-                TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();
-            }
-        });
 
         backButton.addActionListener(e -> {
             backToMainMenuWindow();

@@ -102,7 +102,7 @@ public class TankTrouble {
      * @param args Command line arguments. (Should never use)
      */
     public static void main(String[] args) {
-        gameWindow = new GameWindow();
+        /*gameWindow = new GameWindow();
         gameWindow.drawBattlefield();
         myBattlefield.listOfTanks.add(new Tank(TankTrouble.mainGame.getThisPlayer()));
         Tank myTank = myBattlefield.getListOfTanks().get(0);
@@ -113,6 +113,6 @@ public class TankTrouble {
         Tank enemyTank2 = myBattlefield.getListOfTanks().get(2);
         enemyTank2.owner.setName("qet");
         myBattlefield.addPlayerTankControl();
-        gameWindow.updateTank();
+        gameWindow.updateTank();*/
     }
 }

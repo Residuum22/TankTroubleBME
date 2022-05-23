@@ -30,9 +30,11 @@ public class GameWindow {
 
     private JPanel[][] jPanels = new JPanel[thisGameBattleField.getMazeDimensionX()][thisGameBattleField.getMazeDimensionY()];
 
+    JFrame gameWindowFrame;
+
     public GameWindow() {
         int scale = 28;
-        JFrame gameWindowFrame = new JFrame("Tank Trouble Game - " + TankTrouble.mainGame.getThisPlayerName());
+        gameWindowFrame = new JFrame("Tank Trouble Game - " + TankTrouble.mainGame.getThisPlayerName());
         gameWindowFrame.setSize(60 * scale, 30 * scale);
         gameWindowFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         gameWindowFrame.add(contentPanel);
@@ -45,7 +47,12 @@ public class GameWindow {
             int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?",
                     ":(", JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION) {
-                TankTrouble.mainGame.networkController.leaveGame();
+                try {
+                    //Fixme nullpointer exception Petiiiii
+                    TankTrouble.mainGame.networkController.leaveGame();
+                } catch (NullPointerException ne) {
+                    ne.printStackTrace();
+                }
                 gameWindowFrame.dispose();
                 TankTrouble.waitForGameStartWindow.setWaitForGameStartWindowFrameVisible();
             }
@@ -66,7 +73,11 @@ public class GameWindow {
                     removeTankFromList();
                 }
                 if (thisGameBattleField.listOfTanks.size() == 1) {
-                    //todo message box to winner
+                    //todo message box to
+                    JOptionPane.showConfirmDialog(null, "Winner winner chicken dinner. Go back to main.",
+                            "Flawless victory", JOptionPane.OK_OPTION);
+                    TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();
+                    TankTrouble.gameWindow.getGameWindowFrame().dispose();
                 }
             }
         }, 0, 150);
@@ -265,4 +276,9 @@ public class GameWindow {
         graphic.dispose();
         return rotated;
     }
+
+    public JFrame getGameWindowFrame() {
+        return this.gameWindowFrame;
+    }
+
 }

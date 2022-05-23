@@ -214,7 +214,13 @@ public class Tank extends MovingObject {
 
     public void destroyTank() {
         this.destroyed = true;
-        //todo question "Leave or stay?"
+        int option = JOptionPane.showConfirmDialog(null, "Do you want to spectate?",
+                "DESTROYED ... ", JOptionPane.YES_NO_OPTION);
+        if (option == JOptionPane.NO_OPTION) {
+            TankTrouble.gameWindow.getGameWindowFrame().dispose();
+            TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();
+            //todo networkcontroller
+        }
     }
 
     public JLabel getThisTankJLabel() {return this.thisTankJLabel;}
