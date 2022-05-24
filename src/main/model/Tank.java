@@ -38,7 +38,7 @@ public class Tank extends MovingObject implements Serializable {
     }
 
     public void addControl() {
-        if (owner == TankTrouble.mainGame.getThisPlayer()) {
+        if (owner.name.equals(TankTrouble.mainGame.getThisPlayer().name)) {
             thisTankJLabel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, true), "moveRight");
             thisTankJLabel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, true), "moveLeft");
             thisTankJLabel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, true), "moveUp");

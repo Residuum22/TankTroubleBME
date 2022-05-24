@@ -1,6 +1,8 @@
 package main.model;
 
-public class MovingObject {
+import java.io.Serializable;
+
+public class MovingObject implements Serializable {
     public enum Direction {
         Right,
         Left,

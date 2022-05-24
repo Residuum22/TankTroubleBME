@@ -48,6 +48,7 @@ public class ClientReceiveThread extends Thread{
                             TankTrouble.gameWindow.getBattlefield().setListOfTanks(battlefieldBuildData.tanks);
                             TankTrouble.gameWindow.drawBattlefield();
                             TankTrouble.gameWindow.updateTank();
+                            TankTrouble.gameWindow.getBattlefield().addPlayerTankControl();
                         }
                         case keyPressBroadcast -> {
                             KeyEvent key = (KeyEvent) msg.data;

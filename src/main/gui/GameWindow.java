@@ -133,7 +133,7 @@ public class GameWindow {
 
     public void updateTank() {
         for (Tank currentTank :
-                TankTrouble.myBattlefield.listOfTanks) {
+                TankTrouble.gameWindow.thisGameBattleField.listOfTanks) {
 
             JLabel mainMenuLogoLabel = currentTank.getThisTankJLabel();
             try {
@@ -146,7 +146,7 @@ public class GameWindow {
             Field currentTankField = currentTank.getTankPosition();
             JPanel tmpJPanel = jPanels[currentTankField.getX()][currentTankField.getY()];
             if (!currentTank.destroyed) {
-                if (currentTank.owner == TankTrouble.mainGame.getThisPlayer())
+                if (currentTank.owner.name.equals(TankTrouble.mainGame.getThisPlayer().name))
                     tmpJPanel.setBackground(Color.red);
                 else
                     tmpJPanel.setBackground(Color.blue);
