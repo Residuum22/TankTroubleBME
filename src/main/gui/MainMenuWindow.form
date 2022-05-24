@@ -36,7 +36,7 @@
             </constraints>
             <properties>
               <background color="-9013642"/>
-              <foreground color="-1"/>
+              <foreground color="-16777216"/>
               <text value="Change Username"/>
             </properties>
           </component>
@@ -47,7 +47,7 @@
             <properties>
               <background color="-9013642"/>
               <enabled value="false"/>
-              <foreground color="-1"/>
+              <foreground color="-16777216"/>
               <text value="Search for Lobby"/>
             </properties>
           </component>
@@ -57,7 +57,7 @@
             </constraints>
             <properties>
               <background color="-9013642"/>
-              <foreground color="-1"/>
+              <foreground color="-16777216"/>
               <text value="Quit"/>
             </properties>
           </component>
@@ -68,7 +68,7 @@
             <properties>
               <background color="-9013642"/>
               <enabled value="false"/>
-              <foreground color="-1"/>
+              <foreground color="-16777216"/>
               <text value="Create Lobby"/>
             </properties>
           </component>

@@ -11,7 +11,7 @@ import java.util.List;
 public class CreateRoomWindow {
 
     /**
-     * This function creates a JOptionPane where the user can give the room name (todo)
+     * This function creates a JOptionPane where the user can give the room name
      * and the max slots in the room. If the user hit the ok button but the max slot field contains not an integer
      * value than the user will get an error message to correct it's mistake. If the value correct than create a room.
      * and create a new lobby window. If the user hit the cancel button than get back to main manu window.
@@ -46,7 +46,6 @@ public class CreateRoomWindow {
     }
 
     public void createRoom(String roomName, int slots) {
-        //Todo - done - wait for network controller
         Room room = new Room(
                 Room.RoomType.Host,
                 roomName,

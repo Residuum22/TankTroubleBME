@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/TankTroubleBME_jar</output-path>
     <root id="archive" name="TankTroubleBME.jar">
       <element id="module-output" name="TankTroubleBME" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/lib/junit-4.10.jar" path-in-jar="/" />
+      <element id="library" level="project" name="junit-4.10" />
     </root>
   </artifact>
 </component>

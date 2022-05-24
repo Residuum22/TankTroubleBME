@@ -6,9 +6,10 @@ import main.gui.GameWindow;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.Serializable;
 import java.util.Random;
 
-public class Tank extends MovingObject {
+public class Tank extends MovingObject implements Serializable {
     private JLabel thisTankJLabel = new JLabel();
 
     public Tank(Player tankOwner) {
@@ -46,35 +47,35 @@ public class Tank extends MovingObject {
 
             thisTankJLabel.getActionMap().put("moveRight", new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
-                    //todo TankTrouble.networkController.sendKeyPress(KeyEvent.VK_RIGHT);
+                    TankTrouble.networkController.sendKeyPress(KeyEvent.VK_RIGHT);
                     moveTankToNextPosition(KeyEvent.VK_RIGHT);
                     TankTrouble.gameWindow.updateTank();
                 }
             });
             thisTankJLabel.getActionMap().put("moveLeft", new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
-                    //todo TankTrouble.networkController.sendKeyPress(KeyEvent.VK_LEFT);
+                    TankTrouble.networkController.sendKeyPress(KeyEvent.VK_LEFT);
                     moveTankToNextPosition(KeyEvent.VK_LEFT);
                     TankTrouble.gameWindow.updateTank();
                 }
             });
             thisTankJLabel.getActionMap().put("moveUp", new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
-                    //todo TankTrouble.networkController.sendKeyPress(KeyEvent.VK_UP);
+                    TankTrouble.networkController.sendKeyPress(KeyEvent.VK_UP);
                     moveTankToNextPosition(KeyEvent.VK_UP);
                     TankTrouble.gameWindow.updateTank();
                 }
             });
             thisTankJLabel.getActionMap().put("moveDown", new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
-                    //todo TankTrouble.networkController.sendKeyPress(KeyEvent.VK_DOWN);
+                    TankTrouble.networkController.sendKeyPress(KeyEvent.VK_DOWN);
                     moveTankToNextPosition(KeyEvent.VK_DOWN);
                     TankTrouble.gameWindow.updateTank();
                 }
             });
             thisTankJLabel.getActionMap().put("shootMissile", new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
-                    //todo TankTrouble.networkController.sendKeyPress(KeyEvent.VK_SPACE);
+                    TankTrouble.networkController.sendKeyPress(KeyEvent.VK_SPACE);
                     shootMissile();
                 }
             });
@@ -163,7 +164,7 @@ public class Tank extends MovingObject {
                         }
                     }
                     if(!thereIsTank) {
-                        this.position = presentFields[this.position.getX() - 1][this.position.getY()];;
+                        this.position = presentFields[this.position.getX() - 1][this.position.getY()];
                     }
                 }
             } else {

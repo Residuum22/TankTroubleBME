@@ -1,6 +1,7 @@
 package main.networking;
 
 import main.TankTrouble;
+import main.gui.GameWindow;
 import main.model.Player;
 
 import java.awt.event.KeyEvent;
@@ -81,8 +82,12 @@ public class ServerTransmitThread extends Thread {
     }
 
     private void sendStartingMessage() throws IOException {
+        BattlefieldBuildData battlefieldBuildData = new BattlefieldBuildData(
+                TankTrouble.gameWindow.getBattlefield(),
+                TankTrouble.gameWindow.getBattlefield().getListOfTanks()
+        );
         Message message = new Message(Message.MessageType.serverStartingBattlefieldBuild,
-                TankTrouble.gameWindow.getBattleField());
+                battlefieldBuildData);
         this.objectOutputStream.writeObject(message);
     }
 
@@ -94,7 +99,8 @@ public class ServerTransmitThread extends Thread {
         this.serverState = ServerState.startingBattle;
     }
 
-    public void sendKeyPress(KeyEvent key) {
+    public void sendKeyPress(KeyEvent key) throws IOException {
         Message message = new Message(Message.MessageType.keyPressBroadcast, key);
+        this.objectOutputStream.writeObject(message);
     }
 }

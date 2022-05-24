@@ -41,10 +41,13 @@ public class ClientReceiveThread extends Thread{
                             TankTrouble.waitForGameStartWindow.leaveRoom();
                         }
                         case serverStartingBattlefieldBuild -> {
+                            BattlefieldBuildData battlefieldBuildData = (BattlefieldBuildData) msg.data;
                             TankTrouble.waitForGameStartWindow.remoteGameStarted();
                             TankTrouble.gameWindow = new GameWindow();
-                            TankTrouble.gameWindow.setBattleField((Battlefield) msg.data);
+                            TankTrouble.gameWindow.setBattleField(battlefieldBuildData.battlefield);
+                            TankTrouble.gameWindow.getBattlefield().setListOfTanks(battlefieldBuildData.tanks);
                             TankTrouble.gameWindow.drawBattlefield();
+                            TankTrouble.gameWindow.updateTank();
                         }
                         case keyPressBroadcast -> {
                             KeyEvent key = (KeyEvent) msg.data;

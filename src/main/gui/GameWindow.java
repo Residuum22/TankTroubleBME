@@ -73,7 +73,6 @@ public class GameWindow {
                     removeTankFromList();
                 }
                 if (thisGameBattleField.listOfTanks.size() == 1) {
-                    //todo message box to
                     JOptionPane.showConfirmDialog(null, "Winner winner chicken dinner. Go back to main.",
                             "Flawless victory", JOptionPane.OK_OPTION);
                     TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();
@@ -83,7 +82,11 @@ public class GameWindow {
         }, 0, 150);
     }
 
-    public Battlefield getBattleField() {
+    public void generateBattlefield() {
+        thisGameBattleField.generateBattleFieldPositioningXYCoordinate();
+    }
+
+    public static Battlefield getBattlefield() {
         return thisGameBattleField;
     }
 
@@ -92,9 +95,8 @@ public class GameWindow {
     }
 
     public void drawBattlefield() {
-        thisGameBattleField.generateBattleFieldPositioningXYCoordinate();
         Field[][] fields = thisGameBattleField.getFields();
-        thisGameBattleField.listOfTanks.clear();
+        //thisGameBattleField.listOfTanks.clear();
         thisGameBattleField.listOfMissiles.clear();
 
         int mazeDimensionX = thisGameBattleField.getMazeDimensionX();
@@ -122,10 +124,6 @@ public class GameWindow {
         }
         arenaPanel.revalidate();
         contentPanel.setVisible(true);
-    }
-
-    public static Battlefield getBattlefield() {
-        return thisGameBattleField;
     }
 
     public void updateScreen() {

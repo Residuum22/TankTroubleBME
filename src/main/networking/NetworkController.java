@@ -75,7 +75,7 @@ public class NetworkController extends Thread {
             if(result != null && result.type == Message.MessageType.joinAccepted) {
                 this.clientReceiveThread = new ClientReceiveThread(this.clientObjectInputStream);
                 this.clientTransmitThread = new ClientTransmitThread(this.clientObjectOutputStream);
-                TankTrouble.mainGame.networkController.stopDiscovery();
+                TankTrouble.networkController.stopDiscovery();
                 return true;
             }
         } catch (IOException e) {
@@ -123,8 +123,8 @@ public class NetworkController extends Thread {
     }
 
     private void stopClientFunctions() {
-        this.clientReceiveThread.stopReceive();
         if(this.clientReceiveThread != null) {
+            this.clientReceiveThread.stopReceive();
             this.clientReceiveThread.interrupt();
         }
         if(this.clientObjectInputStream != null) {
@@ -143,7 +143,7 @@ public class NetworkController extends Thread {
         }
     }
 
-    public void broadcastKeyPress(KeyEvent key, ClientConnection source) {
+    public void broadcastKeyPress(KeyEvent key, ClientConnection source) throws IOException {
         for(ClientConnection c : this.activeClientConnections) {
             if(c != source) {
                 c.transmitThread.sendKeyPress(key);
@@ -152,12 +152,9 @@ public class NetworkController extends Thread {
     }
 
     public void sendKeyPress(int key) {
-        Message msg = new Message(Message.MessageType.keyPressFromClient, key);
+        PlayerKeyPress playerKeyPress = new PlayerKeyPress(TankTrouble.mainGame.getThisPlayer(), key);
+        Message msg = new Message(Message.MessageType.keyPressFromClient, playerKeyPress);
         this.clientTransmitThread.sendMessage(msg);
-    }
-
-    public void sendTankList() {
-        
     }
 }
 

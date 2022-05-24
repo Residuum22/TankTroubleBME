@@ -80,27 +80,24 @@ public class Battlefield implements Serializable {
         return mazeDimensionY;
     }
 
-    // szerver csinálja
     public void generateTanks() {
         for (Player tankOwner: TankTrouble.mainGame.getOwnRoom().joinedPlayers) {
             Tank newTank = new Tank(tankOwner);
             this.listOfTanks.add(newTank);
         }
-        TankTrouble.networkController.sendTankList();
         addPlayerTankControl();
     }
 
     public void addPlayerTankControl() {
-        for (Tank playersTank : TankTrouble.gameWindow.getBattleField().getListOfTanks()) {
+        for (Tank playersTank : TankTrouble.gameWindow.getBattlefield().getListOfTanks()) {
             playersTank.addControl();
         }
     }
 
     public ArrayList<Tank> getListOfTanks() {
-        return listOfTanks;
+        return this.listOfTanks;
     }
 
-    // kliensben
     public void setListOfTanks(ArrayList<Tank> tanks) {
         this.listOfTanks = tanks;
     }
