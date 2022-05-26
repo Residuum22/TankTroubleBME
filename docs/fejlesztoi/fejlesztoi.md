@@ -184,7 +184,7 @@ Ez a függvény eltávolítja a tankot a tankok listájából.
 
 ### public static void setBattlefieldMissile(Missile newMissile)
 
-Ez a függvény elhelyez a pályán egy új lövedéket.
+Ez a függvény elhelyez a pályán egy új lövedéket, azáltal, hogy hozzáadja a lövedékek listájához.
 
 ###  private static BufferedImage rotateTankImage(BufferedImage bimg, Tank currentTank)
 
@@ -194,6 +194,81 @@ Ez a függvény végzi el e képnek a forgatását a tank pozíciója alapján, 
 
 Ez a függvény visszaadja az ablak leíró objektumát. 
 
+## Battlefield
+
+Ez az osztály valósítja meg a pályát, amelyeket Field objektumokból épít fel, valamint tárolja a pályán lévő tankokat és lövedékeket egy listában. Valamint tartalmaz egy enum osztályt, amely a pályán található akadályok formáját adja meg.
+
+### public void generateBattleFieldPositioningXYCoordinate()
+
+Ez a függvény felelős a pálya legenerálásért, a megadott X és Y dimenziók megadásával tudjuk beállítani a pálya méretét. A pálya peremét végig fallal veszi körül, majd random különböző formájú és adott mennyiségű akadályokat helyez el a harctéren.
+
+### public Field[][] getFields()
+
+A pálya minden mezőjét visszaadja.
+
+### public int getMazeDimensionX()
+
+A pálya X dimenzióját adja vissza.
+
+### public int getMazeDimensionY()
+
+A pálya Y dimenzióját adja vissza.
+
+### public void generateTanks()
+
+Minden játékoshoz létrehoz egy tankot és ezket elmenti a tankok listájába.
+
+### public void addPlayerTankControl()
+
+Meghívja a tank *addControl()* függvényét, ezáltal a megfelelő játékosnak adva az adott tank fölötti irányítást.
+
+### public ArrayList<Tank> getListOfTanks()
+
+A tankok listáját adja vissza.
+
+### public void setListOfTanks(ArrayList<Tank> tanks)
+
+Beállítja a tank listát már egy meglévő lista alapján.
+
+### public ArrayList<Missile> getListOfMissiles()
+
+A lövedékek listáját adja vissza.
+
+### public int[][] generateBarrier(barrierType barrier)
+
+Különböző akadályokat hoz létre, amelyek lehetnek L, H, T és V formájúak.
+
+### public void mergeSubcoordsIntoTheBattleField(int starX, int starY, int[][] subCoord)
+
+A létrehozott akadályokat elhelyezi a harcmezőn.
+
+## Field
+
+Ezek a harcmező egy adott mezőjét leíró osztály, amely tartalmazza a x és y koordinátákat, valamint a típusát, ami lehet fal vagy út.
+
+### public void setType(FieldType type)
+
+Az adott mező típusát állítja be.
+
+### public FieldType getType()
+
+Az adott mező típusát adja vissza.
+
+### public void setX(int x)
+
+Az adott mező X koordinátáját állítja be.
+
+### public int getX()
+
+Az adott mező X koordinátáját adja vissza.
+
+###  public void setY(int y)
+
+Az adott mező Y koordinátáját állítja be.
+
+### public int getY()
+
+Az adott mező Y koordinátáját adja vissza.
 
 ## MovingObject
 
