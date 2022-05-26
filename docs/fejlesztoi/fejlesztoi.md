@@ -141,3 +141,91 @@ Ez a függvény egy játékosokból álló listából, ami a függvény paramét
 
 
 
+## MovingObject osztály
+
+Ez az osztály az ősosztálya, azon mozgó objektumokhoz tartozó osztályoknak, amelyek a játékban résztvesznek. 
+
+Az osztály tartalmaz egy enum osztályt, amely a jobb, bal, fel és le irányokat valósítja meg.
+Ezen felül még tartozik hozzá 4 különböző változó: 
+    - position: Publikus változó és a Field osztály egy objektuma, azaz azt adja meg, hogy a mozgó objektum a pálya melyik mezőjén helyezkedik.
+    - direction: Az előbb ismertetett enum osztályból származik és a mozgó objektum irányát adja meg, azaz merre halad vagy néz.
+    - destroyed: Egy boolean típusú változó és azt jelzi, hogy a mozgó objektum megsemmisült-e vagy sem.
+    - owner: A Player osztályból objektum, amely a mozgó objektum tulajdonosát adja meg.
+
+## Tank osztály
+
+A tankot, mint mozgó objektumot valósítja meg, a MovingObject osztályból származik, ezért annak változóit örökli, azokon felül, pedig tartalmaz még egy JLabel objektum változót, amely a megjelenítéséért felel.
+
+A konstruktor futása során a tank pozícióját a generált harcmező egy véletlenszerű mezőjére állítja, az irányát is véletlenszerűen választja meg, a destroyed változója false értéket veszi fel, valamint tulajdonosaként az adott játékost jelöli meg.
+
+A továbbiakban az osztály függvényeinek leírása olvasható.
+
+### addControl()
+
+Egy publikus void függvény, amely feljogosítja a tank tulajdonosát a tank irányítására. A mozgáshoz a nyíl, a lövéshez a SPACE billentyűket állítja be. 
+
+### shootMissile()
+
+Egy publikus void függvény, amely a tank irányába egy lövedék objektumot hoz létre, majd változóit, a pozícióját, az irányát, a tulajdonosát és az elpusztítottság állapot tank ugyenezen változóinak értékével egyenlővé teszi.
+
+### moveTankToNextPosition(int KeyCode)
+
+Egy publikus void függvény, amely egy int változót kap paraméterként, amely az adott billentyű kódja.
+Amennyiben az adott tank objektum kap a mozgatásához szükséges parancsot, az adott billentyű által, ez függvény valóstítja meg a mozgást. Elsőként azt ellenőrzi, hogy az irány megfelel-e az mozgás irányának, ha nem akkor az adott irányba fordítja, ha igen, akkor azt ellenőrzi, hogy a következő pozíció fal-e vagy út, ha út akokr tovább lép, ha fal, akkor pedig nem történik semmi.
+
+### destroyTank()
+
+Egy publikus void függvény, amely a tank elpusztításáért felel, azaz a destroy változót true-ra állítja.
+Az elpusztított tank tulajdonosának felugrik egy ablak, ahol kiválaszthatja, hogy a továbbiakban a játékot a végéig tovább nézi vagy visszalép a főmenübe.
+
+### getThisTankJLabel()
+
+Egy publikus függvény, amely a tank objektum thisTankJLabel változóját adja vissza.
+
+### getTankPosition()
+
+Egy publikus függvény, amely a tank objektum position változóját adja vissza.
+
+## Missile osztály
+
+A lövedéket, mint mozgó objektumot valósítja meg, a MovingObject osztályból származik, ezért annak változóit örökli, azokon felül, pedig tartalmaz még egy JLabel objektum változót, amely a megjelenítéséért felel. A változóinak értékét nem a konstruktor, hanem a Tank osztály *shootMissile()* függvénye adja meg.
+
+A továbbiakban az osztály függvényeit fogom ismeretetni.
+
+### updateMissilePosition()
+
+Egy publikus void függény, amely a lövedékek mozgatásáért felel és 150 ms-ként van meghívva minden lövedék objektum esetén.
+Minden lövedék a direction változónak megfelelő irányba mozog, amíg falnak vagy Tanknak nem ütközik. Minden esetben ellenőrzi, hogy a következő mező fal-e vagy út, ha fal, akkor megsemmisül, azaz hívja a *destroyMissile()* függvényt. Ellenkező esetben ellenőrzi, hogy a következő mezőn tartózkodik-e tank objektum, amennyiben nem, akkor halad tovább, ha pedig igen, akkor mind a tank *destroyTank()*, mind a lövedék *destroyMissile()* függvénye meghívódik.
+
+### destroyMissile()
+
+Egy publikus void függvény, amely a lövedék elpusztításáért felel, azaz a destroy változót true-ra állítja.
+
+### getThisMissileJLabel()
+
+Egy publikus függvény, amely a lövedék objektum thisTankJLabel változóját adja vissza.
+
+### getMissilePosition()
+
+Egy publikus függvény, amely a lövedék objektum position változóját adja vissza.
+
+## Player
+
+Ez az osztály a játékosok azonosításáért felel.
+
+Változók:
+    - name: Publikus, sztring típusú változó, amely a játékos nevét adja meg.
+    - ip: Publikus, Inet4Address típusú változól, amely a játékos ip-címét tárolja.
+    - id: Publikus, int típusó változó, amely a játékos egyedi azonosításáért felel.
+
+A konstruktor futása során az id változó értéke egy random számmal lesz egyenlő, ha a konstruktor kap egy sztringet is paraméterként, akkor a name változó is beállításra kerül. 
+
+A továbbiakban a függvényeket ismertetem.
+
+### setName(String name)
+
+Egy publikus void függvény, amely a játékos nevét állítja be.
+
+### setIp(Inet4Address ip)
+
+Egy publikus void függvény, amely a játékos ip-jét állítja be.
