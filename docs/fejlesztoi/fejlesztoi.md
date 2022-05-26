@@ -15,7 +15,7 @@ Ez a függvény frissíti a felfedezett szobák listáját úgy, hogy az előző
 
 Ez a függvény a privát változóban eltárolt elérhető szobákat kérdezi le.
 
-###  public Room getOwnRoom()
+### public Room getOwnRoom()
 
 Ez a függvény lekéri a játékos saját szobáját.
 
@@ -27,13 +27,13 @@ Ez a függvény lekérdezi, hogy van-e a játékosnak saját szobája. Amennyibe
 
 Ez a függvény lekéri ebben a játék kliensben játszó játékos játékosnevét.
 
-###  public Player getThisPlayer()
+### public Player getThisPlayer()
 
+Ez a függvény lekéri ebben a játék kliensben játszó játékos Player objektumát.
 
+### public void modifyPlayerName(String name)
 
-###  public void modifyPlayerName(String name)
-
-
+Ez a függvény megváltoztatja az eltárolt játékosnevet.
 
 ## MainMenuWindow osztály
 
@@ -139,5 +139,57 @@ Ez a függvény felelős a lobby eltüntetéséért.
 
 Ez a függvény egy játékosokból álló listából, ami a függvény paramétere megjeleníti szöveges formátumban az ablak közepén a csatlakozott játékosokat.
 
+## GameWindow
+
+### Konstruktor 
+
+A konstruktorban létrejön az ablak, illetve azt az alapvető funkcionalitás letiltásra kerül, hogy space gomb megnyomása esetén a kilépés a játékból funkció hívódjon meg. Továbbá hozzáadódnak a gombok eseményeinek lekezelésére szolgáló függvények. Ebben a konstruktorban létrejön továbbá egy időzítő, ami megadott (100 ms)-os időközönként meghívódik és a tankok helyzetét, illetve a lövedékek pozícióját frissíti ebben az ablakban. Ez a függvény figyeli továbbá, hogy hány tank helyezkedik el a pályán, mivel ha csak egyetlen egy tank marad, akkor az a játékos megnyerte a jáátékot.
+
+###  public void generateBattlefield()
+
+Ez a függvény hívja meg a Battlefield osztály pályagenerálás függvényét.
+
+### public static Battlefield getBattlefield()
+
+Ez a függvény visszaadja a legenerált csatateret.
+
+### public void setBattleField(Battlefield newBattlefield)
+
+Ez a függvény egy csatateret állít be ebben az objektumban.
+
+### public void drawBattlefield()
+
+Ez a függvény végzi el a csatatér koordinátáiból a kijelzőre történő kirajzolást, úgy hogy folyamatosan új JPaneleket ad hozzá ehhez az ablakhoz és ezeknek fal, vagy pálya tulajdonság esetén fekete illetve fehér hátteret ad. 
 
 
+### public void updateScreen()
+
+Ez a függvény egyszere végzi el a tankok helyzetének és a lövedékek helyzetének a kirajzolását. 
+
+### public void updateTank()
+
+Ez a függvény végzi el a Tank megjelenítését a tank jelenlegi koordinátája alapján. A megjelenítés úgy zajlik, hogy amennyiben a tank még nincs elpusztítva, akkor a tank helyén lévő JPanel hátterét módosítjuk és erre a JPanelre ráhelyezünk egy tank képet. A Tanknak a képe abba az irényba van elforgatva, amerre áll a tank. 
+
+### public void updateMissile()
+
+Ez a függvény végzi el a lövedék megjelenítését a koordinátája alapján. Ezt hasonlóképpen jelenítjük meg, mint a tankokat, annyi kivétellel, hogy ezt nem kell elforgatni.
+
+### public void removeMissileFromList()
+
+Ez a függvény eltávolítja a megsemmisült lövedéket a lövedékek listájából. 
+
+### public void removeTankFromList()
+
+Ez a függvény eltávolítja a tankot a tankok listájából.
+
+### public static void setBattlefieldMissile(Missile newMissile)
+
+Ez a függvény elhelyez a pályán egy új lövedéket.
+
+###  private static BufferedImage rotateTankImage(BufferedImage bimg, Tank currentTank)
+
+Ez a függvény végzi el e képnek a forgatását a tank pozíciója alapján, hogy a megjelenítéskor a tank lövegtornya mindig abba az irányba álljon, amerre a tank néz.
+
+### public JFrame getGameWindowFrame()
+
+Ez a függvény visszaadja az ablak leíró objektumát. 
