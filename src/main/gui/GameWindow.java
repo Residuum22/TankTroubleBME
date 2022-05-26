@@ -34,6 +34,7 @@ public class GameWindow {
 
     public GameWindow() {
         int scale = 28;
+
         gameWindowFrame = new JFrame("Tank Trouble Game - " + TankTrouble.mainGame.getThisPlayerName());
         gameWindowFrame.setSize(60 * scale, 30 * scale);
         gameWindowFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -65,7 +66,7 @@ public class GameWindow {
             public void run() {
                 if (thisGameBattleField.listOfMissiles.size() != 0) {
                     for (Missile currentMissile :
-                            TankTrouble.myBattlefield.listOfMissiles) {
+                            TankTrouble.gameWindow.getBattlefield().listOfMissiles) {
                         currentMissile.updateMissilePosition();
                     }
                     updateScreen();
@@ -175,7 +176,7 @@ public class GameWindow {
 
     public void updateMissile() {
         for (Missile currentMissile :
-                TankTrouble.myBattlefield.listOfMissiles) {
+                TankTrouble.gameWindow.getBattlefield().listOfMissiles) {
 
             JLabel mainMenuLogoLabel = currentMissile.getThisMissileJLabel();
             try {

@@ -49,7 +49,7 @@ public class WaitForGameStartWindow {
         TankTrouble.gameWindow = new GameWindow();
         TankTrouble.gameWindow.generateBattlefield();
         TankTrouble.gameWindow.getBattlefield().generateTanks();
-        TankTrouble.networkController.broadcastGameStarting();
+        TankTrouble.mainGame.networkController.broadcastGameStarting();
         TankTrouble.gameWindow.drawBattlefield();
         TankTrouble.gameWindow.updateTank();
     }

@@ -38,7 +38,7 @@ public class Tank extends MovingObject implements Serializable {
     }
 
     public void addControl() {
-        if (owner.name.equals(TankTrouble.mainGame.getThisPlayer().name)) {
+        if (owner.id == TankTrouble.mainGame.getThisPlayer().id) {
             thisTankJLabel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, true), "moveRight");
             thisTankJLabel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, true), "moveLeft");
             thisTankJLabel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, true), "moveUp");
@@ -47,35 +47,35 @@ public class Tank extends MovingObject implements Serializable {
 
             thisTankJLabel.getActionMap().put("moveRight", new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
-                    TankTrouble.networkController.sendKeyPress(KeyEvent.VK_RIGHT);
+                    TankTrouble.mainGame.networkController.sendKeyPress(KeyEvent.VK_RIGHT);
                     moveTankToNextPosition(KeyEvent.VK_RIGHT);
                     TankTrouble.gameWindow.updateTank();
                 }
             });
             thisTankJLabel.getActionMap().put("moveLeft", new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
-                    TankTrouble.networkController.sendKeyPress(KeyEvent.VK_LEFT);
+                    TankTrouble.mainGame.networkController.sendKeyPress(KeyEvent.VK_LEFT);
                     moveTankToNextPosition(KeyEvent.VK_LEFT);
                     TankTrouble.gameWindow.updateTank();
                 }
             });
             thisTankJLabel.getActionMap().put("moveUp", new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
-                    TankTrouble.networkController.sendKeyPress(KeyEvent.VK_UP);
+                    TankTrouble.mainGame.networkController.sendKeyPress(KeyEvent.VK_UP);
                     moveTankToNextPosition(KeyEvent.VK_UP);
                     TankTrouble.gameWindow.updateTank();
                 }
             });
             thisTankJLabel.getActionMap().put("moveDown", new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
-                    TankTrouble.networkController.sendKeyPress(KeyEvent.VK_DOWN);
+                    TankTrouble.mainGame.networkController.sendKeyPress(KeyEvent.VK_DOWN);
                     moveTankToNextPosition(KeyEvent.VK_DOWN);
                     TankTrouble.gameWindow.updateTank();
                 }
             });
             thisTankJLabel.getActionMap().put("shootMissile", new AbstractAction() {
                 public void actionPerformed(ActionEvent e) {
-                    TankTrouble.networkController.sendKeyPress(KeyEvent.VK_SPACE);
+                    TankTrouble.mainGame.networkController.sendKeyPress(KeyEvent.VK_SPACE);
                     shootMissile();
                 }
             });
@@ -89,7 +89,7 @@ public class Tank extends MovingObject implements Serializable {
         int TankYCoordinate = this.position.getY();
         int missileNumber = 0;
         for (Missile missileObject : presentBattlefield.listOfMissiles) {
-            if (missileObject.owner.equals(TankTrouble.mainGame.getThisPlayer())) {
+            if (missileObject.owner.id == TankTrouble.mainGame.getThisPlayer().id) {
                 missileNumber++;
             }
         }

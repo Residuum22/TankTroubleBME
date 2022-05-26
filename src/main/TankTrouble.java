@@ -20,7 +20,7 @@ public class TankTrouble {
 
     public static Battlefield myBattlefield = GameWindow.getBattlefield();
 
-    public static NetworkController networkController = new NetworkController();
+    public NetworkController networkController = new NetworkController();
 
 
 

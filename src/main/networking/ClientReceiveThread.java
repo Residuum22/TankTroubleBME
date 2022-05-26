@@ -4,6 +4,7 @@ import main.TankTrouble;
 import main.gui.GameWindow;
 import main.model.Battlefield;
 import main.model.Player;
+import main.model.Tank;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -51,8 +52,23 @@ public class ClientReceiveThread extends Thread{
                             TankTrouble.gameWindow.getBattlefield().addPlayerTankControl();
                         }
                         case keyPressBroadcast -> {
-                            KeyEvent key = (KeyEvent) msg.data;
-                            // todo handle key press
+                            PlayerKeyPress playerKeyPress = (PlayerKeyPress) msg.data;
+                            for(Tank tank : TankTrouble.gameWindow.getBattlefield().getListOfTanks()) {
+                                if(tank.owner.id == playerKeyPress.player.id) {
+                                    switch (playerKeyPress.key) {
+                                        case KeyEvent.VK_UP:
+                                        case KeyEvent.VK_DOWN:
+                                        case KeyEvent.VK_LEFT:
+                                        case KeyEvent.VK_RIGHT:
+                                            tank.moveTankToNextPosition(playerKeyPress.key);
+                                            TankTrouble.gameWindow.updateTank();
+                                            break;
+                                        case KeyEvent.VK_SPACE:
+                                            tank.shootMissile();
+                                            break;
+                                    }
+                                }
+                            }
                         }
                     }
                 } catch (SocketException | EOFException e) {
@@ -65,7 +81,7 @@ public class ClientReceiveThread extends Thread{
 
                 synchronized (this) {
                     try {
-                        this.wait(1);
+                        this.wait(10);
                     } catch (InterruptedException e) {
                         this.isRunning = false;
                     }

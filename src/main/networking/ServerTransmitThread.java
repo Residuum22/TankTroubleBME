@@ -1,12 +1,9 @@
 package main.networking;
 
 import main.TankTrouble;
-import main.gui.GameWindow;
 import main.model.Player;
 
-import java.awt.event.KeyEvent;
 import java.io.*;
-import java.util.ArrayList;
 
 public class ServerTransmitThread extends Thread {
     private ObjectOutputStream objectOutputStream;
@@ -99,8 +96,8 @@ public class ServerTransmitThread extends Thread {
         this.serverState = ServerState.startingBattle;
     }
 
-    public void sendKeyPress(KeyEvent key) throws IOException {
-        Message message = new Message(Message.MessageType.keyPressBroadcast, key);
+    public void sendKeyPress(PlayerKeyPress playerKeyPress) throws IOException {
+        Message message = new Message(Message.MessageType.keyPressBroadcast, playerKeyPress);
         this.objectOutputStream.writeObject(message);
     }
 }
