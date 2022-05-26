@@ -156,9 +156,9 @@ Ezen felül még tartozik hozzá 4 különböző változó:
 
 A tankot, mint mozgó objektumot valósítja meg, a MovingObject osztályból származik, ezért annak változóit örökli, azokon felül, pedig tartalmaz még egy JLabel objektum változót, amely a megjelenítéséért felel.
 
-A konstruktor futása során a tank pozícióját a generált harcmező egy véletlenszerű mezőjére állítja, az irányát is véletlenszerűen választja meg, a destroyed változója false értéket veszi fel, valamint tulajdonosaként az adott játékost jelöli meg.
+### Konstruktor
 
-A továbbiakban az osztály függvényeinek leírása olvasható.
+A konstruktor futása során a tank pozícióját a generált harcmező egy véletlenszerű mezőjére állítja, az irányát is véletlenszerűen választja meg, a destroyed változója false értéket veszi fel, valamint tulajdonosaként az adott játékost jelöli meg.
 
 ### public void addControl()
 
@@ -190,8 +190,6 @@ A tank objektum position változóját adja vissza.
 
 A lövedéket, mint mozgó objektumot valósítja meg, a MovingObject osztályból származik, ezért annak változóit örökli, azokon felül, pedig tartalmaz még egy JLabel objektum változót, amely a megjelenítéséért felel. A változóinak értékét nem a konstruktor, hanem a Tank osztály *shootMissile()* függvénye adja meg.
 
-A továbbiakban az osztály függvényeit fogom ismeretetni.
-
 ### public void updateMissilePosition()
 
 A lövedékek mozgatásáért felel és 150 ms-ként van meghívva minden lövedék objektum esetén.
@@ -218,9 +216,9 @@ Változók:
     - ip: Publikus, Inet4Address típusú változól, amely a játékos ip-címét tárolja.
     - id: Publikus, int típusó változó, amely a játékos egyedi azonosításáért felel.
 
-A konstruktor futása során az id változó értéke egy random számmal lesz egyenlő, ha a konstruktor kap egy sztringet is paraméterként, akkor a name változó is beállításra kerül. 
+### Konstruktorok
 
-A továbbiakban a függvényeket ismertetem.
+A konstruktor futása során az id változó értéke egy random számmal lesz egyenlő, ha a konstruktor kap egy sztringet is paraméterként, akkor a name változó is beállításra kerül. 
 
 ### public void setName(String name)
 
