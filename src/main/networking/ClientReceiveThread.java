@@ -38,12 +38,21 @@ public class ClientReceiveThread extends Thread{
                             }
                         }
                         case serverClosing -> {
-                            JOptionPane.showMessageDialog(null, "Server stopped");
-                            TankTrouble.waitForGameStartWindow.leaveRoom();
+                            JOptionPane.showMessageDialog(null, "Server stopped.");
+                            if(TankTrouble.waitForGameStartWindow != null) {
+                                TankTrouble.waitForGameStartWindow.leaveRoom();
+                            }
+                            if(TankTrouble.gameWindow != null) {
+                                TankTrouble.gameWindow.getGameWindowFrame().dispose();
+                            }
                         }
                         case serverStartingBattlefieldBuild -> {
                             BattlefieldBuildData battlefieldBuildData = (BattlefieldBuildData) msg.data;
                             TankTrouble.waitForGameStartWindow.remoteGameStarted();
+                            if(TankTrouble.gameWindow != null) {
+                                TankTrouble.gameWindow.getGameWindowFrame().dispose();
+                                TankTrouble.gameWindow.clearBattlefield();
+                            }
                             TankTrouble.gameWindow = new GameWindow();
                             TankTrouble.gameWindow.setBattleField(battlefieldBuildData.battlefield);
                             TankTrouble.gameWindow.getBattlefield().setListOfTanks(battlefieldBuildData.tanks);
@@ -70,12 +79,24 @@ public class ClientReceiveThread extends Thread{
                                 }
                             }
                         }
+                        case clientLeaving -> {
+                            Player leaver = (Player) msg.data;
+                            ArrayList<Tank> tanks = TankTrouble.gameWindow.getBattlefield().getListOfTanks();
+
+                            for (Tank tank : tanks) {
+                                if(tank.owner.id == leaver.id) {
+                                    tank.destroyed = true;
+                                }
+                            }
+                            TankTrouble.gameWindow.updateTank();
+                            TankTrouble.gameWindow.removeTankFromList();
+                        }
                     }
-                } catch (SocketException | EOFException e) {
+                } catch (SocketException e) {
                     if(this.isRunning) {
                         e.printStackTrace();
                     }
-                } catch (SocketTimeoutException ignored) {
+                } catch (SocketTimeoutException | EOFException ignored) {
 
                 }
 

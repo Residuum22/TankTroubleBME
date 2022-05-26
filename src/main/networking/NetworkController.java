@@ -118,8 +118,38 @@ public class NetworkController extends Thread {
     }
 
     public void leaveGame() {
-        this.stopClientFunctions();
+        if(TankTrouble.mainGame.hasOwnRoom()) {
+            TankTrouble.mainGame.networkController.broadcastServerStopping();
+        } else {
+            TankTrouble.mainGame.networkController.sendClientLeave();
+        }
         this.startDiscovery();
+    }
+
+    private void sendClientLeave() {
+        Message msg = new Message(Message.MessageType.clientLeaving, TankTrouble.mainGame.getThisPlayer());
+        this.clientTransmitThread.sendMessage(msg);
+    }
+
+    public void broadcastClientLeave(Message msg) {
+        for(ClientConnection c : this.activeClientConnections) {
+            try {
+                c.transmitThread.sendClientLeave(msg);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void broadcastServerStopping() {
+        for(ClientConnection c : this.activeClientConnections) {
+            try {
+                c.transmitThread.sendServerStopping();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            c.transmitThread.stopServer();
+        }
     }
 
     private void stopClientFunctions() {

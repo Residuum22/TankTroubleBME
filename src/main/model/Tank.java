@@ -215,12 +215,14 @@ public class Tank extends MovingObject implements Serializable {
 
     public void destroyTank() {
         this.destroyed = true;
-        int option = JOptionPane.showConfirmDialog(null, "Do you want to spectate?",
-                "DESTROYED ... ", JOptionPane.YES_NO_OPTION);
-        if (option == JOptionPane.NO_OPTION) {
-            TankTrouble.gameWindow.getGameWindowFrame().dispose();
-            TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();
-            //todo networkcontroller
+        if(this.owner.id == TankTrouble.mainGame.getThisPlayer().id) {
+            int option = JOptionPane.showConfirmDialog(null, "Do you want to spectate?",
+                    "DESTROYED ... ", JOptionPane.YES_NO_OPTION);
+            if (option == JOptionPane.NO_OPTION) {
+                TankTrouble.gameWindow.getGameWindowFrame().dispose();
+                TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();
+                //todo networkcontroller
+            }
         }
     }
 

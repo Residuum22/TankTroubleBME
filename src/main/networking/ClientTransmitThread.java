@@ -35,6 +35,9 @@ public class ClientTransmitThread extends Thread {
                     try {
                         Message msg = (Message) this.messageQueue.poll();
                         this.objectOutputStream.writeObject(msg);
+                        if(msg.type == Message.MessageType.clientLeaving) {
+                            this.isRunning = false;
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

@@ -100,4 +100,13 @@ public class ServerTransmitThread extends Thread {
         Message message = new Message(Message.MessageType.keyPressBroadcast, playerKeyPress);
         this.objectOutputStream.writeObject(message);
     }
+
+    public void sendServerStopping() throws IOException {
+        Message message = new Message(Message.MessageType.serverClosing, null);
+        this.objectOutputStream.writeObject(message);
+    }
+
+    public void sendClientLeave(Message msg) throws IOException {
+        this.objectOutputStream.writeObject(msg);
+    }
 }

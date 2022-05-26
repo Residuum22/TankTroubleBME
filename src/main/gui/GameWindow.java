@@ -55,7 +55,9 @@ public class GameWindow {
                     ne.printStackTrace();
                 }
                 gameWindowFrame.dispose();
-                TankTrouble.waitForGameStartWindow.setWaitForGameStartWindowFrameVisible();
+                if(TankTrouble.mainGame.hasOwnRoom()) {
+                    TankTrouble.waitForGameStartWindow.setWaitForGameStartWindowFrameVisible();
+                }
             }
         });
         contentPanel.setVisible(false);
@@ -74,16 +76,23 @@ public class GameWindow {
                     removeTankFromList();
                 }
                 if (thisGameBattleField.listOfTanks.size() == 1) {
-                    JOptionPane.showConfirmDialog(null, "Winner winner chicken dinner. Go back to main.",
-                            "Flawless victory", JOptionPane.OK_OPTION);
+                    JOptionPane.showConfirmDialog(null,
+                            TankTrouble.gameWindow.getBattlefield().listOfTanks.get(0).owner.name
+                            + "! Winner winner chicken dinner. Go back to main.",
+                            "Flawless victory", JOptionPane.OK_CANCEL_OPTION);
                     TankTrouble.mainMenuWindow.setMainMenuWindowFrameVisible();
                     TankTrouble.gameWindow.getGameWindowFrame().dispose();
+                    timer.cancel();
+                    timer.purge();
                 }
             }
         }, 0, 150);
     }
 
     public void generateBattlefield() {
+        if(thisGameBattleField == null) {
+            thisGameBattleField = new Battlefield();
+        }
         thisGameBattleField.generateBattleFieldPositioningXYCoordinate();
     }
 
@@ -93,6 +102,14 @@ public class GameWindow {
 
     public void setBattleField(Battlefield newBattlefield) {
         thisGameBattleField = newBattlefield;
+    }
+
+    public void clearBattlefield() {
+        if(thisGameBattleField != null) {
+            thisGameBattleField.listOfTanks.clear();
+            thisGameBattleField.listOfMissiles.clear();
+        }
+        thisGameBattleField = null;
     }
 
     public void drawBattlefield() {
@@ -279,5 +296,4 @@ public class GameWindow {
     public JFrame getGameWindowFrame() {
         return this.gameWindowFrame;
     }
-
 }

@@ -56,6 +56,20 @@ public class ServerReceiveThread extends Thread {
                                 }
                             }
                         }
+                        case clientLeaving -> {
+                            Player leaver = (Player) msg.data;
+                            ArrayList<Tank> tanks = TankTrouble.gameWindow.getBattlefield().getListOfTanks();
+
+                            for (Tank tank : tanks) {
+                                if(tank.owner.id == leaver.id) {
+                                    tank.destroyed = true;
+                                }
+                            }
+
+                            TankTrouble.gameWindow.updateTank();
+                            TankTrouble.gameWindow.removeTankFromList();
+                            TankTrouble.mainGame.networkController.broadcastClientLeave(msg);
+                        }
                     }
                 } catch (SocketException | EOFException e) {
                     if(this.isRunning) {
