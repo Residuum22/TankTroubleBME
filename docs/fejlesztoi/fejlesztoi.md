@@ -193,3 +193,4 @@ Ez a függvény végzi el e képnek a forgatását a tank pozíciója alapján, 
 ### public JFrame getGameWindowFrame()
 
 Ez a függvény visszaadja az ablak leíró objektumát. 
+Ez a függvény visszaadja az ablak leíró objektumát. 
