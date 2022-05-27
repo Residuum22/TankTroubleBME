@@ -356,3 +356,286 @@ A játékos nevét állítja be.
 ### public void setIp(Inet4Address ip)
 
 A játékos ip-jét állítja be.
+
+## NetworkController
+
+Ez az osztály felelős a hálózati kommunikáció összefogásáért, mind a szerver, mind a kliens működésért felelős programrészek itt futnak össze.
+
+### public void startDiscovery()
+
+A (lokális) hálózaton elérhető szobák felkutatásának elindítására használható függvény. Amikor éppen nincs folyamatban csata, és a program nem szerver módban van, akkor folyamatosan keresi a hálózaton az elérhető szobákat. Mivel a teljes hálózat végigpingelése adott esetben hosszú időbe is telhet, ezért hasznos, ha folyamatosan fut ez a funkció.
+
+### public void stopDiscovery()
+
+A startDiscovery() függvény párja, a hálózaton elérhető szobák felkutatását lehet vele megállítani.
+
+### public void startExternalDiscoveryService()
+
+Ha a programban szervert hozott létre a felhasználó, akkor a programnak válaszolnia kell a kívülről érkező kérdésekre, hogy elérhető-e szoba ezen a gépen. Ennek a függvénynek a segítségével lehet elindítani a szoba "felfedezhetőségét".
+
+### public void stopExternalDiscoveryService()
+
+A startExternalDiscoveryService() függvény párja, a felfedezhetőséget lehet vele megszűntetni.
+
+### public boolean joinRoom(Room room)
+
+Ezzel a függvénnyel lehet kliens módban kezdeményezni a (hálózaton már felfedezett) `room` szobához való kapcsolódást. A boolean visszatérési érték azt mutatja, hogy sikeres volt-e a csatlakozás.
+
+### public void closeRoom()
+
+Szerver módban a létrehozott szobát lehet megszűntetni ennek a függvénynek a használatával mindaddig, amíg a szobában nem indult el a játék, hanem csak a lobby-van várakoznak a csatlakozott játékosok.
+
+### public static boolean handleExternalJoinRequest(Object data, InetAddress address)
+
+Szerver mód esetén ha a hálózaton a szobához (amiben még nem indult el a játék, csak a lobby-ban várakoznak a felhasználók) csatlakozási kérés érkezik, ez a függvény hívódik meg, és csatlakoztatja az új játékost a szobához, ha lehetséges, vagy elutasítja a kérelmet.
+
+### public void leaveLobby()
+
+Akár szerver, akár kliens módban, mikor a játékosok a lobby-ban várakoznak a játék elindulására, ezzel a függvénnyel lehet kilépni a lobby-ból. Kliens esetén csak kilép a felhasználó a játék előszobájából, míg szerver mód esetén megszűnik a szerver, és az összes felhasználó a saját kezdőképernyőjére kerül.
+
+### public void broadcastGameStarting()
+
+A játék kezdetekor ezen a függvényen keresztül lehet a csatlakozott kliensek felé jelezni, hogy elkezdődött a játék.
+
+### public void leaveGame()
+
+Akár szerver, akár kliens módban ezzel a függvénnyel lehet kilépni az éppen futó csatából. Kliens esetén csak az adott felhasználó lép ki a játékból, míg szerver mód esetén megszűnik a szerver, és az összes felhasználó a saját kezdőképernyőjére kerül.
+
+### private void sendClientLeave()
+
+A program kliens módja esetén ezen a függvényen keresztül lehet jelezni a szervernek, hogy a felhasználó kilép a szobából.
+
+### public void broadcastClientLeave(Message msg)
+
+A szerver ezen a függvényen keresztül továbbítja minden kliensre az egyik kliens lecsatlakozásának tényét (amit a sendClientLeave() függvényen keresztül kapott). A lecsatlakozás tényéről minden kliens értesül, kivéve maga a lecsatlakozó kliens.
+
+### private void broadcastServerStopping()
+
+Szerver mód esetén, ha játék közben megszűnteti a játékot a szervert létrehozó felhasználó, ezen a függvényen keresztül kerül kiküldésre ennek a ténye az összes csatlakozott kliensre.
+
+### private void stopClientFunctions()
+
+Ezzel a függvénnyel lehet a kliensfunkcióit leállítani a programnak, ez bontja a szerverhez csatlakozó socket-et, és minden I/O stream-et.
+
+### public void sendKeyPress(int key)
+
+Ha a felhasználó lenyomja valamelyik irányító gombot (fel, le, jobbra, balra, space) a játék közben, akkor ez a függvény küldi be az adott gombnyomás tényét a szervernek, hogy az továbbíthassa az összes kliensbe (és ő maga is feldolgozhassa).
+
+### public void broadcastKeyPress(PlayerKeyPress playerKeyPress, ClientConnection source)
+
+Szerver módban ezen a függvényen keresztül továbbítja a NetworkController a beérkezett gombnyomást minden kliensbe (kivéve abba, ahonnan maga a gombnyomás érkezett).
+
+## ServerTransmitThread
+
+Szerverként való működés esetén minden egyes klienshez létrejön egy ilyen szál, ez a felelős azért, hogy a szükséges adatokat elküldje a hozzá tartozó kliensnek.
+
+### private enum ServerState
+
+Szerver mód esetén a program állapotgépként működik, ez a pillanatnyi állapotait leíró felsorolt típus.
+
+### public ServerTransmitThread(ObjectOutputStream objectOutputStream, ClientConnection connection, Player player)
+
+Az osztály konstruktora, ami átveszi a már megnyitott ObjectOutputStream-et, és a csatolt klienshez tartozó játékost. Az illető játékosnak/kliensnek küldendő adatokat ez a szál fogja küldeni a kapott kimenő adatfolyamon keresztül.
+
+### public void run()
+
+A szál futását megvalósító függvény. Ez a függvény a szerver állapotának megfelelően küldi az információkat a kliensnek.
+
+Amíg a szerver játékindulás előtti állapotban van, a szál a lobby pillanatnyi állapotát küldi periódikusan a kliensnek, tehát a csatlakozott játékosok listáját.
+
+Mikor a játék indul, ez a függvény küldi el a kliensnek a generált pályát, és a pályán elhelyezkedő tankokat.
+
+A játék végén, vagy ha a host játékos már lobby állapotban megszűnteti a szobát, akkor is ez a thread tájékoztatja erről a klienst.
+
+### private void sendClosingMessage()
+
+Ez a függvény küldi ki azt az üzenetet, hogy a szerver leállt (akát lobby, akár csata közbeni módban).
+
+### private void sendLobbyUpdate()
+
+Ez a függvény küldi a kliensnek a játékra várakozó felhasználók listáját.
+
+### private void sendStartingMessage()
+
+Ez a függvény tájékoztatja a klienst a játék indulásáról, és küldi el a generált pályát és a tankokat.
+
+### public void stopServer()
+
+Ezzel a függvénnyel lehet leállítani az adott szerver-kliens kapcsolatot.
+
+### public void startGame()
+
+A játék elindítására szolgáló függvény, csak az állapotgép állapotát változtatja, majd a főszál ennek megfelelően küldi a szükséges adatokat.
+
+### public void sendKeyPress(PlayerKeyPress playerKeyPress)
+
+Ezen a függvényen keresztül lehet egy kliensnek elküldeni egy másik kliensben történt gombnyomást.
+
+### public void sendServerStopping()
+
+Ezen a függvényen keresztül lehet a csatlakoztatott kliensnek a szerver leállításáról szóló üzenetet küldeni.
+
+### public void sendClientLeave(Message msg)
+
+Ezen a függvényen keresztül lehet a klienst egy másik kliens kilépéről tájékoztatni.
+
+## ServerReceiveThread
+
+Szerverként való működés esetén minden egyes klienshez létrejön egy ilyen szál, ez a felelős azért, hogy a szükséges adatokat fogadja a hozzá tartozó klienstől.
+
+### public ServerReceiveThread(ObjectInputStream objectInputStream, ClientConnection connection)
+
+Az osztály konstruktora, ami átveszi a már megnyitott ObjectInputStream-et, és a csatolt klienshez tartozó kapcsolatot leíró objektumot. Az illető játékostól/klienstől fogadott adatokat ez a szál fogja fogadni a kapott bejövő adatfolyamon keresztül.
+
+### public void run()
+
+A szál futását megvalósító függvény. A szál várakozik bejövő adatra, majd egy fogadott üzenet estén továbbítja a megfelelő osztályoknak a kapott információt.
+
+### public void stopServer()
+
+Ezzel a függvénnyel lehet leállítani az adott szerver-kliens kapcsolatot.
+
+## ClientReceiveThread
+
+Kliensként való működés esetén létrejön egy ilyen szál, ez a felelős azért, hogy a szükséges adatokat fogadja a szervertől.
+
+### public ClientReceiveThread(ObjectInputStream objectInputStream)
+
+Az osztály konstruktora, ami átveszi a már megnyitott ObjectInputStream-et. A szervertől fogadott adatokat ez a szál fogja fogadni a kapott bejövő adatfolyamon keresztül, majd feldolgozza azokat, illetve továbbítja az azokhoz kapcsolódó objektumoknak.
+
+### public void run()
+
+A szál futását megvalósító függvény. A szál várakozik bejövő adatra, majd egy fogadott üzenet estén továbbítja a megfelelő osztályoknak a kapott információt.
+
+### public void stopReceive()
+
+Ezzel a függvénnyel lehet leállítani az adott szerver-kliens kapcsolatot.
+
+## ClientTransmitThread
+
+Kliensként való működés esetén létrejön egy ilyen szál, ez a felelős azért, hogy a szükséges adatokat küldje a szerver felé.
+
+### public ClientTransmitThread(ObjectOutputStream objectOutputStream)
+
+Az osztály konstruktora, ami átveszi a már megnyitott ObjectOutputStream-et. Ez a szál fogja elküldeni a szervernek a szükséges adatokat.
+
+### public void run()
+
+A szál futását megvalósító függvény. A szál egy FIFO listában tárolja a szervernek küldendő üzeneteket. Mikor a listában van elküldendő üzenet, olyankor elküldi.
+
+### public void sendMessage(Message msg)
+
+Ezzel a függvénnyel lehet üzenetet küldeni a szállal a szervernek.
+
+## ClientConnection
+
+Minden kliens csatlakozásakor lérejön egy ilyen objektum, ami a kapcsolat adatait írja le. Ez az osztály fogja össze a kliens küldő és fogadó adatfolyamait.
+
+### public ClientConnection(Socket socket,
+ObjectInputStream objectInputStream,
+ObjectOutputStream objectOutputStream,
+Player player)
+
+Az osztály konstruktora, ez veszi át a már megnyitott adatfolyamokat, és a kapcsolt játékost, illetve hozza létre a játékoshoz tartozó küldő és fogadó szálakat.
+
+### public void closeConnection()
+
+Ha egy másik kliens kliép a játékból, akkor ezen a függvényen keresztül lehet eltávolítani őt a csatlakozott játékosok közül.
+
+### public void stopServer()
+
+Ezzel a függvénnyel lehet leállítani a kliens kapcsolatát, mind az adatok küldését, mind azok fogadását.
+
+## Message
+
+A kliensek és a szerver közötti kommunikációt ezek az üzenetek valósítják meg. Minden üzenetnek van egy típusa és egy adattartalma, a szerver vagy a kliens az üzenet fogadása után az üzenet típusa alapján dolgozza fel a benne lévő adatot.
+
+### public enum MessageType
+
+Felsorolt típus, az üzenet típusát mutatja meg.
+
+### Message(MessageType type, Object data)
+
+Maga az üzenet, aminek van egy típusa, és egy tetszőleges (akár `null`) adattartalma.
+
+## BattlefieldBuildData
+
+### public BattlefieldBuildData(Battlefield battlefield, ArrayList<Tank> tanks)
+
+Új játék indulásakor ez a segédosztály használatával lehet a kliensekbe elküldeni a szerveren generált pályafelépítést és tankpozíciókat.
+
+## PlayerKeyPress
+
+Segédosztály, ami egy gombnyomást ír le, de hozzárendeli a felhasználót is, akinél a gombnyomás volt.
+
+### public PlayerKeyPress(Player player, int key)
+
+Konstrultor, ezen keresztül lehet létrehozni a példányt.
+
+## IncomingConnectionHandlerThread
+
+Ez a szál felelős a kívülről érkező kapcsolatok fogadásáért.
+
+### public IncomingConnectionHandlerThread()
+
+Konstruktor, ezen keresztül indítható el a kapcsolatok beérkezésének figyelése.
+
+### public void run()
+
+A szál futását megvalósító függvény, egy socket-en keresztül bejövő kapcsolatra vár, majd ha van ilyen, létrehoz egy `RoomConnectionHelper` szálat, és átadja neki a socket-et, majd újra figyelni kezd.
+
+### public void stopListening()
+
+A bejövő kapcsolatok fogadásának megállítására szolgáló függvény.
+
+## RoomConnectionHelper
+
+A bejövő kapcsolatok feldolgozásáért felelős objetkum, szerverként való működés esetén ez csatlakoztatja be a felhasználót a szobába.
+
+### RoomConnectionHelper(Socket socket)
+
+Konstruktor, ami a kapott socket-en keresztül becsatlakoztatja a klienst a szobába.
+
+## DiscoveryService
+
+A hálózaton elérhető szobák felfedezéséért felelős osztály.
+
+### public DiscoveryService()
+
+Konstruktor, csak a szál elindítására használjuk.
+
+### public void run()
+
+A szál futását megvalósító függvény. 
+
+Klies mód esetén az osztály további függvényeit felhasználva felkutatja a hálózaton elérhető szobákat, majd frissíti a játék ősosztályában a szobalistát.
+
+Szerver mód esetén ez szál küldi ki a szoba adatait a külső (kliens módban futó) programoknak.
+
+### private ArrayList<String> checkAvailableNetworks()
+
+A hálózati szobafelfedezéshez ez a függvény vizsgálja meg, hogy a számítógép milyen hálózatokra kapcsolódik.
+
+### private ArrayList<String> checkSubNet(String hostAddress)
+
+A hálózati szobafelfedezéshez ez a függvény vizsgálja meg, hogy az adott alhálózaton melyik címeken van elérhető végpont.
+
+### private Room checkIfRemoteRoomAvailable(String host)
+
+A hálózati szobafelfedezéshez ez a függvény vizsgálja meg, hogy a már megtalált elérhető végponton van-e aktív, kapcsolódó felhasználókra váró szoba.
+
+### public void startDiscovery()
+
+A szobák keresésének elindítására szolgáló függvény.
+
+### public void stopDiscovery()
+
+A szobák keresésének leállítására szolgáló függvény.
+
+### public void startExternalDiscoveryService()
+
+Szerverként való működés esetén a hálózaton szobákat felfedezni próbáló kliensek kiszolgálásának elindítására szolgáló függvény.
+
+### public void stopExternalDiscoveryService()
+
+Szerverként való működés esetén a hálózaton szobákat felfedezni próbáló kliensek kiszolgálásának leállítására szolgáló függvény.
