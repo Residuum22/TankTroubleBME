@@ -4,6 +4,7 @@ import main.TankTrouble;
 import main.gui.GameWindow;
 import main.model.Battlefield;
 import main.model.Player;
+import main.model.Tank;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -36,7 +37,38 @@ public class ServerReceiveThread extends Thread {
 
                     switch (msg.type) {
                         case keyPressFromClient -> {
-                            TankTrouble.mainGame.networkController.broadcastKeyPress((KeyEvent) msg.data, this.connection);
+                            TankTrouble.mainGame.networkController.broadcastKeyPress((PlayerKeyPress) msg.data, this.connection);
+                            PlayerKeyPress playerKeyPress = (PlayerKeyPress) msg.data;
+                            for(Tank tank : TankTrouble.myBattlefield.listOfTanks) {
+                                if(tank.owner.id == playerKeyPress.player.id) {
+                                    switch (playerKeyPress.key) {
+                                        case KeyEvent.VK_UP:
+                                        case KeyEvent.VK_DOWN:
+                                        case KeyEvent.VK_LEFT:
+                                        case KeyEvent.VK_RIGHT:
+                                            tank.moveTankToNextPosition(playerKeyPress.key);
+                                            TankTrouble.gameWindow.updateTank();
+                                            break;
+                                        case KeyEvent.VK_SPACE:
+                                            tank.shootMissile();
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                        case clientLeaving -> {
+                            Player leaver = (Player) msg.data;
+                            ArrayList<Tank> tanks = TankTrouble.gameWindow.getBattlefield().getListOfTanks();
+
+                            for (Tank tank : tanks) {
+                                if(tank.owner.id == leaver.id) {
+                                    tank.destroyed = true;
+                                }
+                            }
+
+                            TankTrouble.gameWindow.updateTank();
+                            TankTrouble.gameWindow.removeTankFromList();
+                            TankTrouble.mainGame.networkController.broadcastClientLeave(msg);
                         }
                     }
                 } catch (SocketException | EOFException e) {

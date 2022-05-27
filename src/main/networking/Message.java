@@ -11,7 +11,8 @@ public class Message implements Serializable {
         serverClosing,
         serverStartingBattlefieldBuild,
         keyPressFromClient,
-        keyPressBroadcast
+        keyPressBroadcast,
+        clientLeaving
     }
 
     public Object data;

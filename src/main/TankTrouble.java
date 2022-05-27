@@ -1,16 +1,12 @@
 package main;
 
 import main.gui.GameWindow;
-import main.gui.WaitForGameStartWindow;
-import main.model.Battlefield;
-import main.model.Player;
-import main.model.Room;
 import main.gui.MainMenuWindow;
-import main.networking.DiscoveryService;
+import main.gui.WaitForGameStartWindow;
+import main.model.*;
 import main.networking.NetworkController;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TankTrouble {
     public static TankTrouble mainGame = new TankTrouble();
@@ -19,10 +15,14 @@ public class TankTrouble {
     public static GameWindow gameWindow;
 
     private Room ownRoom = null;
-    private ArrayList<Room> listOfRemoteRooms = new ArrayList<>();
-    private final Player thisPlayer = new Player();
+    private final ArrayList<Room> listOfRemoteRooms = new ArrayList<>();
+    private Player thisPlayer = new Player();
+
+    public static Battlefield myBattlefield = GameWindow.getBattlefield();
 
     public NetworkController networkController = new NetworkController();
+
+
 
     /**
      * LOL this will be our game.
@@ -55,7 +55,6 @@ public class TankTrouble {
     }
 
     /**
-     * This function returns remote rooms which is avaliable of the current user on the same network.
      * @return The avaliable room's on the network.
      */
     public ArrayList<Room> getListOfRemoteRooms() {
@@ -103,12 +102,17 @@ public class TankTrouble {
      * @param args Command line arguments. (Should never use)
      */
     public static void main(String[] args) {
-//        GameWindow asd = new GameWindow();
-//        asd.drawBattlefield();
-//        Battlefield asd = new Battlefield();
-//        int[][] int1 = asd.generateBarrier(Battlefield.barrierType.LWall);
-//        int[][] int2 = asd.generateBarrier(Battlefield.barrierType.HLine);
-//        int[][] int3 = asd.generateBarrier(Battlefield.barrierType.VLine);
-//        int[][] int4 = asd.generateBarrier(Battlefield.barrierType.TWall);
+        /*gameWindow = new GameWindow();
+        gameWindow.drawBattlefield();
+        myBattlefield.listOfTanks.add(new Tank(TankTrouble.mainGame.getThisPlayer()));
+        Tank myTank = myBattlefield.getListOfTanks().get(0);
+        myBattlefield.listOfTanks.add(new Tank(new Player()));
+        Tank enemyTank = myBattlefield.getListOfTanks().get(1);
+        enemyTank.owner.setName("qwe");
+        myBattlefield.listOfTanks.add(new Tank(new Player()));
+        Tank enemyTank2 = myBattlefield.getListOfTanks().get(2);
+        enemyTank2.owner.setName("qet");
+        myBattlefield.addPlayerTankControl();
+        gameWindow.updateTank();*/
     }
 }

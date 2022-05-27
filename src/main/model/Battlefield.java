@@ -1,6 +1,9 @@
 package main.model;
 
+import main.TankTrouble;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -13,12 +16,12 @@ public class Battlefield implements Serializable {
      */
     int mazeDimensionX = 60;
     int mazeDimensionY = 30;
-    int numberOfBarrier = 25;
+    int numberOfBarrier = 30;
     int barrierDimension = 5;
 
-    Field[][] fields = new Field[mazeDimensionY][mazeDimensionX];
-    // todo missile
-    // todo tanks
+    Field[][] fields = new Field[mazeDimensionX][mazeDimensionY];
+    public ArrayList<Missile> listOfMissiles = new ArrayList<>();
+    public ArrayList<Tank> listOfTanks = new ArrayList<>();
 
     //todo network controller event handling
 
@@ -34,18 +37,18 @@ public class Battlefield implements Serializable {
      * coordinates. Where this algorithm's condition is true, there the field became wall.
      * In the second phase this function generate barriers in the arena. The barrier coordinate is randomly generated.
      */
-    public void generateBattleFieldPositioningXZCoordinate() {
+    public void generateBattleFieldPositioningXYCoordinate() {
         //Generate wall around the arena.
         for (int i = 0; i < mazeDimensionX; i++) {
             for (int j = 0; j < mazeDimensionY; j++) {
-                fields[j][i] = new Field();
+                fields[i][j] = new Field();
                 if (i == 0 || j == 0 || i == mazeDimensionX - 1 || j == mazeDimensionY - 1) {
-                    fields[j][i].setType(Field.FieldType.Wall);
+                    fields[i][j].setType(Field.FieldType.Wall);
                 } else {
-                    fields[j][i].setType(Field.FieldType.Road);
+                    fields[i][j].setType(Field.FieldType.Road);
                 }
-                fields[j][i].setX(i);
-                fields[j][i].setY(j);
+                fields[i][j].setX(i);
+                fields[i][j].setY(j);
             }
         }
 
@@ -75,6 +78,32 @@ public class Battlefield implements Serializable {
 
     public int getMazeDimensionY() {
         return mazeDimensionY;
+    }
+
+    public void generateTanks() {
+        for (Player tankOwner: TankTrouble.mainGame.getOwnRoom().joinedPlayers) {
+            Tank newTank = new Tank(tankOwner);
+            this.listOfTanks.add(newTank);
+        }
+        addPlayerTankControl();
+    }
+
+    public void addPlayerTankControl() {
+        for (Tank playersTank : TankTrouble.gameWindow.getBattlefield().getListOfTanks()) {
+            playersTank.addControl();
+        }
+    }
+
+    public ArrayList<Tank> getListOfTanks() {
+        return this.listOfTanks;
+    }
+
+    public void setListOfTanks(ArrayList<Tank> tanks) {
+        this.listOfTanks = tanks;
+    }
+
+    public ArrayList<Missile> getListOfMissiles() {
+        return listOfMissiles;
     }
 
     public int[][] generateBarrier(barrierType barrier) {
@@ -112,8 +141,8 @@ public class Battlefield implements Serializable {
     public void mergeSubcoordsIntoTheBattleField(int starX, int starY, int[][] subCoord) {
         for (int i = starX, subi = 0; (i < this.mazeDimensionX) && (subi < barrierDimension); i++, subi++) {
             for (int j = starY, subj = 0; j < this.mazeDimensionY && subj < barrierDimension; j++, subj++) {
-                if (subCoord[subj][subi] == 1) {
-                    fields[j][i].setType(Field.FieldType.Wall);
+                if (subCoord[subi][subj] == 1) {
+                    fields[i][j].setType(Field.FieldType.Wall);
                 }
             }
         }

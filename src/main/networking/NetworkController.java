@@ -118,13 +118,43 @@ public class NetworkController extends Thread {
     }
 
     public void leaveGame() {
-        this.stopClientFunctions();
+        if(TankTrouble.mainGame.hasOwnRoom()) {
+            TankTrouble.mainGame.networkController.broadcastServerStopping();
+        } else {
+            TankTrouble.mainGame.networkController.sendClientLeave();
+        }
         this.startDiscovery();
     }
 
+    private void sendClientLeave() {
+        Message msg = new Message(Message.MessageType.clientLeaving, TankTrouble.mainGame.getThisPlayer());
+        this.clientTransmitThread.sendMessage(msg);
+    }
+
+    public void broadcastClientLeave(Message msg) {
+        for(ClientConnection c : this.activeClientConnections) {
+            try {
+                c.transmitThread.sendClientLeave(msg);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void broadcastServerStopping() {
+        for(ClientConnection c : this.activeClientConnections) {
+            try {
+                c.transmitThread.sendServerStopping();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            c.transmitThread.stopServer();
+        }
+    }
+
     private void stopClientFunctions() {
-        this.clientReceiveThread.stopReceive();
         if(this.clientReceiveThread != null) {
+            this.clientReceiveThread.stopReceive();
             this.clientReceiveThread.interrupt();
         }
         if(this.clientObjectInputStream != null) {
@@ -143,16 +173,25 @@ public class NetworkController extends Thread {
         }
     }
 
-    public void broadcastKeyPress(KeyEvent key, ClientConnection source) {
+    public void broadcastKeyPress(PlayerKeyPress playerKeyPress, ClientConnection source) throws IOException {
         for(ClientConnection c : this.activeClientConnections) {
-            if(c != source) {
-                c.transmitThread.sendKeyPress(key);
+            if(source == null || c != source) {
+                c.transmitThread.sendKeyPress(playerKeyPress);
             }
         }
     }
 
-    public void sendKeyPress(KeyEvent key) {
-        Message msg = new Message(Message.MessageType.keyPressFromClient, key);
+    public void sendKeyPress(int key) {
+        PlayerKeyPress playerKeyPress = new PlayerKeyPress(TankTrouble.mainGame.getThisPlayer(), key);
+        Message msg = new Message(Message.MessageType.keyPressFromClient, playerKeyPress);
+        if(TankTrouble.mainGame.hasOwnRoom()) {
+            try {
+                this.broadcastKeyPress(playerKeyPress, null);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
         this.clientTransmitThread.sendMessage(msg);
     }
 }

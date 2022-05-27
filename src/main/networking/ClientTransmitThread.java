@@ -10,6 +10,7 @@ import java.io.*;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -20,7 +21,7 @@ public class ClientTransmitThread extends Thread {
 
     public ClientTransmitThread(ObjectOutputStream objectOutputStream) {
         this.objectOutputStream = objectOutputStream;
-        this.messageQueue = new PriorityQueue<>();
+        this.messageQueue = new LinkedList<>();
         this.isRunning = true;
         this.start();
     }
@@ -34,6 +35,9 @@ public class ClientTransmitThread extends Thread {
                     try {
                         Message msg = (Message) this.messageQueue.poll();
                         this.objectOutputStream.writeObject(msg);
+                        if(msg.type == Message.MessageType.clientLeaving) {
+                            this.isRunning = false;
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
