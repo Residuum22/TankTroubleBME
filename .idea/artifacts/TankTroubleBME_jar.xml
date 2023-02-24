@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="TankTroubleBME:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/TankTroubleBME_jar</output-path>
+    <root id="archive" name="TankTroubleBME.jar">
+      <element id="module-output" name="TankTroubleBME" />
+      <element id="library" level="project" name="junit-4.10" />
+    </root>
+  </artifact>
+</component>
