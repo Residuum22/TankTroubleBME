@@ -1,6 +1,6 @@
 # TankTrouble tervdokumentáció
 
-![Ősosztályok](osztalydiagram.png)
+![Ősosztályok](src/osztalydiagram.png)
 
 ## Osztályok
 
